@@ -1,6 +1,7 @@
 <style>
   mat-form-field {
     display: block;
+    width: 50%;
   }
 </style>
 <section>
@@ -8,6 +9,10 @@
     <mat-card>
     <mat-card-title>Price service controlls</mat-card-title>
     <button mat-raised-button color="accent">Send request to database</button>
+    <br>
+    <mat-form-field appearance="outline">
+      <input matInput id="serviceUrl" [(ngModel)]="serviceUrl">
+    </mat-form-field>    
     </mat-card>
   </div>
 </section>
@@ -25,37 +30,37 @@
     <br>
     <mat-form-field appearance="outline">
       <mat-label>Timeout duration</mat-label>
-      <input matInput id="timeout_duration">
+      <input matInput id="timeoutDuration" [(ngModel)]="timeoutDuration">
       <span matSuffix>ms</span>
     </mat-form-field>
   </div>    
   <div class="sample" *ngIf="!isConsecutiveSelected">
     <mat-form-field appearance="outline">
       <mat-label>Monitor duration in ms</mat-label>
-        <input matNativeControl id="monitor_duration">
+        <input matNativeControl id="monitorDuration" [(ngModel)]="monitorDuration">
         <span matSuffix>ms</span>
     </mat-form-field>
     <br>
       <mat-form-field appearance="outline">
         <mat-label>Threshold</mat-label>
-        <input matNativeControl id="threshold"
+        <input matNativeControl id="threshold" [(ngModel)]="threshold"
         matTooltip="Breaks if more requests than the threshold percentage fail in a certain duration">
       </mat-form-field>
       <br>
       <mat-form-field appearance="outline">
         <mat-label>Minimum requests per second</mat-label>
-        <input matNativeControl id="minimum_requests"
+        <input matNativeControl id="minimumRequests" [(ngModel)]="minimumRequests"
         matTooltip="Defines a minimum number of requests that need to occur before the breaker can open">
         </mat-form-field>          
   </div>
   <div class="consecutive" *ngIf="isConsecutiveSelected">
     <mat-form-field appearance="outline">
       <mat-label>Number of failures in a row</mat-label>
-      <input matNativeControl id="consecutive_failures">
+      <input matNativeControl id="consecutiveFailures" [(ngModel)] ="consecutiveFailures">
     </mat-form-field>
   </div>
   <div>
-    <button mat-raised-button color="accent">Save configuration</button>
+    <button (click)="createBreakerConfig()" mat-raised-button color="accent">Change configuration</button>
   </div>
 </section>  
 
