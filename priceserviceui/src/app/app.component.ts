@@ -19,7 +19,7 @@ export class AppComponent {
   isConsecutiveSelected: boolean = true;
   // two way binding with ui inputs
   serviceUrl : string = "http://localhost:3000/";
-  backEndUrl : string = "http://localhost:3400/config/"
+  backEndUrl : string = "http://localhost:3300/config/"
   threshold : number = 0.5 ;
   timeoutDuration : number = 10000;
   monitorDuration : number = 10000;
@@ -38,6 +38,7 @@ export class AppComponent {
   }
 
   createBreakerConfig() {
+    console.log("button pressed")
     let breakerConfig : JSON;
     if (this.isConsecutiveSelected) {
       breakerConfig = JSON.parse('{ "breaker" : "consecutive", "timeoutDuration" : "'+ this.timeoutDuration +'", "consecutiveFailures" : "'+ this.consecutiveFailures +'"}');
@@ -45,7 +46,8 @@ export class AppComponent {
       breakerConfig = JSON.parse(
         '{ "breaker" : "sample", "timeoutDuration" : "' + this.timeoutDuration + '", "monitorDuration" : "' + this.monitorDuration + '", "threshold" : "' + this.threshold + '", "minimumRequests" : "' + this.minimumRequests + '"}');
       }
-      this.sendBreakerConfig(breakerConfig);
+    console.log(breakerConfig);
+    this.sendBreakerConfig(breakerConfig);
   }
 
   sendBreakerConfig(json : JSON) {
