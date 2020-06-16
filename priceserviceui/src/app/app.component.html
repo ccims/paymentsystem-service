@@ -23,6 +23,9 @@
     <mat-form-field appearance="outline">
       <mat-label>Choose the breaker type</mat-label>
       <mat-select
+        matTooltip="There are two different breaker types.
+        The ConsecutiveBreaker breaks after n requests in a row fail.
+        The SamplingBreaker breaks after a proportion of requests over a time period fail."
         #mySelect
         (selectionChange)="selectInput(mySelect.value)"
         [(value)]="selected"
@@ -34,7 +37,9 @@
     <br />
     <mat-form-field appearance="outline">
       <mat-label>Timeout duration</mat-label>
-      <input matInput id="timeoutDuration" [(ngModel)]="timeoutDuration" />
+      <input matInput id="timeoutDuration"
+             [(ngModel)]="timeoutDuration"
+             matTooltip="Time that the CircuitBreaker stays open before closing again"/>
       <span matSuffix>ms</span>
     </mat-form-field>
   </div>
@@ -45,6 +50,7 @@
         matNativeControl
         id="monitorDuration"
         [(ngModel)]="monitorDuration"
+        matTooltip="Duration in which the percentage of failed calls is evaluated"
       />
       <span matSuffix>ms</span>
     </mat-form-field>
@@ -65,7 +71,7 @@
         matNativeControl
         id="minimumRequests"
         [(ngModel)]="minimumRequests"
-        matTooltip="Defines a minimum number of requests that need to occur before the breaker can open"
+        matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open."
       />
     </mat-form-field>
   </div>
@@ -76,6 +82,7 @@
         matNativeControl
         id="consecutiveFailures"
         [(ngModel)]="consecutiveFailures"
+        matTooltip="Number of consecutive failures before the breaker opens"
       />
     </mat-form-field>
   </div>

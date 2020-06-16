@@ -54,7 +54,6 @@ export class AppComponent {
   }
 
   createBreakerConfig() {
-    console.log('button pressed');
     let breakerConfig: JSON;
     if (this.isConsecutiveSelected) {
       breakerConfig = JSON.parse('{ "breaker" : "consecutive", "timeoutDuration" : "' + this.timeoutDuration + '", "consecutiveFailures" : "' + this.consecutiveFailures + '"}');
