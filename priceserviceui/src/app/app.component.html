@@ -8,7 +8,8 @@
   <div>
     <mat-card>
       <mat-card-title>Price service controls</mat-card-title>
-      <button mat-raised-button color="accent">Send request to database</button>
+      <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
+        Send request to database</button>
       <br />
       <mat-form-field appearance="outline">
         <input matInput id="serviceUrl" [(ngModel)]="serviceUrl" />
@@ -79,7 +80,7 @@
     </mat-form-field>
   </div>
   <div>
-    <button (click)="createBreakerConfig()" mat-raised-button color="accent">
+    <button type="button" (click)="createBreakerConfig()" mat-raised-button color="accent">
       Change configuration
     </button>
   </div>
