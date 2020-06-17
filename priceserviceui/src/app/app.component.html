@@ -1,9 +1,19 @@
 <style>
   mat-form-field {
     display: block;
-    width: 50%;
+    width: 100%;
+    margin: auto;
+  }
+  mat-card {
+    width: 100%;
+    margin: auto;
+    margin-top: 16px;   
+  }
+  .outer {
+    margin-left: 24px;
   }
 </style>
+<div class="outer" fxLayout="row" fxLayoutGap="24px">
 <section>
   <div>
     <mat-card>
@@ -14,11 +24,13 @@
       <mat-form-field appearance="outline">
         <input matInput id="serviceUrl" [(ngModel)]="serviceUrl" />
       </mat-form-field>
+      <pre>{{consoleOutput}}</pre>
     </mat-card>
   </div>
 </section>
 <br />
 <section>
+  <mat-card>
   <div>
     <mat-form-field appearance="outline">
       <mat-label>Choose the breaker type</mat-label>
@@ -91,4 +103,6 @@
       Change configuration
     </button>
   </div>
+</mat-card>
 </section>
+</div>
