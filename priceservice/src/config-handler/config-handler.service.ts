@@ -12,7 +12,10 @@ export class ConfigHandlerService {
     private _minimumRequests: number = 1;
     private _consecutiveFailures: number = 3;
    
-
+    /**
+     * 
+     * @param breakerConfig 
+     */
     setBreakerConfig(breakerConfig : ConfigDTO) {
         this.breakerType = breakerConfig.breaker;
         this.timeoutDuration = breakerConfig.timeoutDuration;
@@ -26,7 +29,7 @@ export class ConfigHandlerService {
         console.log(this.breakerType, this.timeoutDuration, this.consecutiveFailures);
     }
 
-    
+    // getter and setter
     public get monitorUrl(): string {
         return this._monitorUrl;
     }
