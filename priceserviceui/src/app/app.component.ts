@@ -22,13 +22,17 @@ export class AppComponent {
   backEndUrl = 'http://localhost:3300/config/';
   sendRequestUrl = 'http://localhost:3300/request';
   threshold = 0.5 ;
+  resetDuration = 10000;
   timeoutDuration = 10000;
   monitorDuration = 10000;
   minimumRequests = 1;
   consecutiveFailures = 3;
 
   consoleOutput = '';
-
+  /**
+   *
+   * @param input
+   */
   selectInput(input: string) {
     const selected = input;
     if (selected === 'consecutive') {
@@ -37,11 +41,16 @@ export class AppComponent {
       this.isConsecutiveSelected = false;
     }
   }
-
+  /**
+   *
+   * @param input
+   */
   addToOutput(input: string) {
     this.consoleOutput = this.consoleOutput + input + '\n';
   }
-
+  /**
+   *
+   */
   sendRequest() {
     this.http.get(this.sendRequestUrl)
       .subscribe(
@@ -58,20 +67,25 @@ export class AppComponent {
         }
       );
   }
-
+/**
+ *
+ */
   createBreakerConfig() {
     let breakerConfig: JSON;
     if (this.isConsecutiveSelected) {
-      breakerConfig = JSON.parse('{ "breaker" : "consecutive", "timeoutDuration" : "' + this.timeoutDuration + '", "consecutiveFailures" : "' + this.consecutiveFailures + '"}');
+      breakerConfig = JSON.parse(
+        '{ "breaker" : "consecutive", "timeoutDuration" : "' + this.timeoutDuration + '", "resetDuration" : "' + this.resetDuration + '", "consecutiveFailures" : "' + this.consecutiveFailures + '"}');
     } else {
       breakerConfig = JSON.parse(
-        '{ "breaker" : "sample", "timeoutDuration" : "' + this.timeoutDuration + '", "monitorDuration" : "' + this.monitorDuration + '", "threshold" : "' + this.threshold + '", "minimumRequests" : "' + this.minimumRequests + '"}');
+        '{ "breaker" : "sample", "timeoutDuration" : "' + this.timeoutDuration + '", "resetDuration" : "' + this.resetDuration + '", "monitorDuration" : "' + this.monitorDuration + '", "threshold" : "' + this.threshold + '", "minimumRequests" : "' + this.minimumRequests + '"}');
       }
     console.log(breakerConfig);
-    this.addToOutput(JSON.stringify(breakerConfig));
     this.sendBreakerConfig(breakerConfig);
   }
-
+/**
+ *
+ * @param json
+ */
   sendBreakerConfig(json: JSON) {
     const headers = new HttpHeaders()
       .set('Content-Type', 'application/json');
@@ -79,6 +93,7 @@ export class AppComponent {
     this.http.put(this.backEndUrl, json, {headers, responseType : 'text' as 'text'})
         .subscribe(
           val => {
+            this.addToOutput('New CircuitBreaker configuration: ' + JSON.stringify(json));
             console.log('Updated the breaker config!', val);
           },
           response => {

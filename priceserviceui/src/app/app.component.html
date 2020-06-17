@@ -51,6 +51,14 @@
       <mat-label>Timeout duration</mat-label>
       <input matInput id="timeoutDuration"
              [(ngModel)]="timeoutDuration"
+             matTooltip="Time that the CircuitBreaker waits to for the response before failing the request"/>
+      <span matSuffix>ms</span>
+    </mat-form-field>
+    <br />
+    <mat-form-field appearance="outline">
+      <mat-label>Reset duration</mat-label>
+      <input matInput id="resetDuration"
+             [(ngModel)]="resetDuration"
              matTooltip="Time that the CircuitBreaker stays open before closing again"/>
       <span matSuffix>ms</span>
     </mat-form-field>
