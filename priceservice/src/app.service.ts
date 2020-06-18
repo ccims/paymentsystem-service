@@ -1,6 +1,8 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { BrokenCircuitError, ConsecutiveBreaker, Policy, SamplingBreaker, TaskCancelledError, TimeoutStrategy } from "cockatiel";
 import { ConfigHandlerService } from './config-handler/config-handler.service';
+import { LogMessageFormat, LogType } from "logging-format";
+import { TIMEOUT } from 'dns';
 
 
 @Injectable()
@@ -18,6 +20,8 @@ export class AppService {
     minimumRps : this.configHandlerService.minimumRequests}));  
 
   private timeout = Policy.timeout(this.configHandlerService.timeoutDuration, TimeoutStrategy.Aggressive);
+
+  
 
   /**
    * Method that updates the breaker and timeout components
@@ -42,13 +46,19 @@ export class AppService {
    * Prints success or failure of the http call to the console
    * @param data 
    */
-  private sendError(type : string, message : string) {
-    let data = JSON.parse('{ "type" : "' + type + '", "message" : "' + message + '"}');
-    this.httpService.post(this.configHandlerService.monitorUrl, data).subscribe(
+  private sendError(type : LogType, message : string, source : string, target : string) {
+    let logMsg: LogMessageFormat = {
+      type: type,
+      time: Date.now(),
+      source: source,
+      target: target,
+      message: message
+    }
+    this.httpService.post(this.configHandlerService.monitorUrl, logMsg).subscribe(
       res => console.log(`Report sent to monitor at ${this.configHandlerService.monitorUrl}`),
       err => console.log(`Monitor at ${this.configHandlerService.monitorUrl} not available`),
     );
-    return data;
+    return logMsg;
   }
   /**
    * 
@@ -69,11 +79,11 @@ export class AppService {
       } 
     } catch (error) {
         if (error instanceof BrokenCircuitError) {
-          return this.sendError('CBOpen', 'CircuitBreaker is open.')
+          return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice')
         } else if (error instanceof TaskCancelledError) {
-          return this.sendError('Timeout','Request was timed out.')
+          return this.sendError(LogType.TIMEOUT,'Request was timed out.',  'priceservice', 'databaseservice')
         } else {
-          return this.sendError('Error','Service is not available.')
+          return this.sendError(LogType.ERROR,'Service is not available.',  'priceservice', 'databaseservice')
         }
     }
   }
