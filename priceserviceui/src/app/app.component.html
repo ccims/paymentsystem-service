@@ -4,111 +4,99 @@
     width: 100%;
     margin: auto;
   }
+
   mat-card {
     width: 100%;
     margin: auto;
-    margin-top: 16px;   
+    margin-top: 16px;
   }
+
   .outer {
     margin-left: 24px;
   }
 </style>
 <mat-toolbar color="primary">Price service</mat-toolbar>
 <div class="outer" fxLayout="row" fxLayoutGap="24px">
-<section fxFlex="70">
-  <div>
+  <section fxFlex="70">
+    <div>
+      <mat-card>
+        <mat-card-title>Price service controls</mat-card-title>
+        <mat-form-field appearance="outline">
+          <mat-label>Choose request type</mat-label>
+          <mat-select (selectionChange)="setRequestUrl()" [(value)]="requestTypeSelected">
+            <mat-option value="default">Breaker Test</mat-option>
+            <mat-option value="balance">Balance</mat-option>
+            <mat-option value="customerName">Customer name</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
+          Send request to database</button>
+        <br />
+        <pre>{{consoleOutput}}</pre>
+      </mat-card>
+    </div>
+  </section>
+  <br />
+  <section fxFlex="25">
     <mat-card>
-      <mat-card-title>Price service controls</mat-card-title>
-      <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
-        Send request to database</button>
-      <br />
-      <pre>{{consoleOutput}}</pre>
-    </mat-card>
-  </div>
-</section>
-<br />
-<section fxFlex="25">
-  <mat-card>
-  <div>
-    <mat-form-field appearance="outline">
-      <mat-label>Choose the breaker type</mat-label>
-      <mat-select
-        matTooltip="There are two different breaker types.
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Choose the breaker type</mat-label>
+          <mat-select matTooltip="There are two different breaker types.
         The ConsecutiveBreaker breaks after n requests in a row fail.
-        The SamplingBreaker breaks after a proportion of requests over a time period fail."
-        #mySelect
-        (selectionChange)="selectInput(mySelect.value)"
-        [(value)]="selected"
-      >
-        <mat-option value="consecutive">ConsecutiveBreaker</mat-option>
-        <mat-option value="sample">SampleBreaker</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br />
-    <mat-form-field appearance="outline">
-      <mat-label>Timeout duration</mat-label>
-      <input matInput id="timeoutDuration"
-             [(ngModel)]="timeoutDuration"
-             matTooltip="Time that the CircuitBreaker waits to for the response before failing the request"/>
-      <span matSuffix>ms</span>
-    </mat-form-field>
-    <br />
-    <mat-form-field appearance="outline">
-      <mat-label>Reset duration</mat-label>
-      <input matInput id="resetDuration"
-             [(ngModel)]="resetDuration"
-             matTooltip="Time that the CircuitBreaker stays open before closing again"/>
-      <span matSuffix>ms</span>
-    </mat-form-field>
-  </div>
-  <div class="sample" *ngIf="!isConsecutiveSelected">
-    <mat-form-field appearance="outline">
-      <mat-label>Monitor duration in ms</mat-label>
-      <input
-        matNativeControl
-        id="monitorDuration"
-        [(ngModel)]="monitorDuration"
-        matTooltip="Duration in which the percentage of failed calls is evaluated"
-      />
-      <span matSuffix>ms</span>
-    </mat-form-field>
-    <br />
-    <mat-form-field appearance="outline">
-      <mat-label>Threshold</mat-label>
-      <input
-        matNativeControl
-        id="threshold"
-        [(ngModel)]="threshold"
-        matTooltip="Breaks if more requests than the threshold percentage fail in a certain duration"
-      />
-    </mat-form-field>
-    <br />
-    <mat-form-field appearance="outline">
-      <mat-label>Minimum requests per second</mat-label>
-      <input
-        matNativeControl
-        id="minimumRequests"
-        [(ngModel)]="minimumRequests"
-        matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open."
-      />
-    </mat-form-field>
-  </div>
-  <div class="consecutive" *ngIf="isConsecutiveSelected">
-    <mat-form-field appearance="outline">
-      <mat-label>Number of failures in a row</mat-label>
-      <input
-        matNativeControl
-        id="consecutiveFailures"
-        [(ngModel)]="consecutiveFailures"
-        matTooltip="Number of consecutive failures before the breaker opens"
-      />
-    </mat-form-field>
-  </div>
-  <div>
-    <button type="button" (click)="createBreakerConfig()" mat-raised-button color="accent">
-      Change configuration
-    </button>
-  </div>
-</mat-card>
-</section>
+        The SamplingBreaker breaks after a proportion of requests over a time period fail." #breakerTypeSelect
+            (selectionChange)="selectInput(breakerTypeSelect.value)" [(value)]="breakerTypeSelected">
+            <mat-option value="consecutive">ConsecutiveBreaker</mat-option>
+            <mat-option value="sample">SampleBreaker</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <br />
+        <mat-form-field appearance="outline">
+          <mat-label>Timeout duration</mat-label>
+          <input matInput id="timeoutDuration" [(ngModel)]="timeoutDuration"
+            matTooltip="Time that the CircuitBreaker waits to for the response before failing the request" />
+          <span matSuffix>ms</span>
+        </mat-form-field>
+        <br />
+        <mat-form-field appearance="outline">
+          <mat-label>Reset duration</mat-label>
+          <input matInput id="resetDuration" [(ngModel)]="resetDuration"
+            matTooltip="Time that the CircuitBreaker stays open before closing again" />
+          <span matSuffix>ms</span>
+        </mat-form-field>
+      </div>
+      <div class="sample" *ngIf="!isConsecutiveSelected">
+        <mat-form-field appearance="outline">
+          <mat-label>Monitor duration in ms</mat-label>
+          <input matNativeControl id="monitorDuration" [(ngModel)]="monitorDuration"
+            matTooltip="Duration in which the percentage of failed calls is evaluated" />
+          <span matSuffix>ms</span>
+        </mat-form-field>
+        <br />
+        <mat-form-field appearance="outline">
+          <mat-label>Threshold</mat-label>
+          <input matNativeControl id="threshold" [(ngModel)]="threshold"
+            matTooltip="Breaks if more requests than the threshold percentage fail in a certain duration" />
+        </mat-form-field>
+        <br />
+        <mat-form-field appearance="outline">
+          <mat-label>Minimum requests per second</mat-label>
+          <input matNativeControl id="minimumRequests" [(ngModel)]="minimumRequests"
+            matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open." />
+        </mat-form-field>
+      </div>
+      <div class="consecutive" *ngIf="isConsecutiveSelected">
+        <mat-form-field appearance="outline">
+          <mat-label>Number of failures in a row</mat-label>
+          <input matNativeControl id="consecutiveFailures" [(ngModel)]="consecutiveFailures"
+            matTooltip="Number of consecutive failures before the breaker opens" />
+        </mat-form-field>
+      </div>
+      <div>
+        <button type="button" (click)="createBreakerConfig()" mat-raised-button color="accent">
+          Change configuration
+        </button>
+      </div>
+    </mat-card>
+  </section>
 </div>
