@@ -35,7 +35,7 @@ The ConsecutiveBreaker opens after n requests.
 The SamplingBreaker opens after a percentage of requests fails within a certain time period.
 ```
 ![Configuration of SamplingBreaker](https://github.com/ccims/paymentsystem-service/blob/master/documentation/SamplingBreaker.png)
-```
+
 
 
 ## Backend
