@@ -16,19 +16,25 @@ $ ng serve
 
 ```
 The frontend is running at http://localhost:4300
-
+```
 ![Complete UI](documentation/FullUI.png)
-
-The app allows to send GET requests to the database service. The requests are monitored by a circuit breaker that watches for errors in the requests.
+```
+The app allows to send GET requests to the database service.
+The requests are monitored by a circuit breaker that watches for errors in the requests.
+There are different endpoints that the GET request can be send to.
+These can be selected in the "Choose request type" selector.
+```
 ![Sending requests to the database service](documentation/SendRequestField.png)
-There are different endpoints that the GET request can be send to. These can be selected in the "Choose request type" selector.
-
+```
 The circuit breaker has two different types that can be configured:
-![Configuration of ConsecutiveBreaker](documentation/ConsecutiveBreaker.png)
-The ConsecutiveBreaker opens after n requests.
 
-![Configuration of SamplingBreaker](https://github.com/ccims/paymentsystem-service/blob/master/documentation/SamplingBreaker.png)
+The ConsecutiveBreaker opens after n requests.
+```
+![Configuration of ConsecutiveBreaker](documentation/ConsecutiveBreaker.png)
+```
 The SamplingBreaker opens after a percentage of requests fails within a certain time period.
+```
+![Configuration of SamplingBreaker](https://github.com/ccims/paymentsystem-service/blob/master/documentation/SamplingBreaker.png)
 ```
 
 
