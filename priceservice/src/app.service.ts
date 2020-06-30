@@ -14,11 +14,15 @@ export class AppService {
     private httpService: HttpService) { }
   /**
    * Constructor for the consecutiveBreaker
+   * The ConsecutiveBreaker breaks after n requests in a row fail
+   * More info at https://github.com/connor4312/cockatiel#consecutivebreaker
    */
   private consecutiveBreaker = Policy.handleAll().circuitBreaker(
     this.configHandlerService.resetDuration, new ConsecutiveBreaker(this.configHandlerService.consecutiveFailures));
   /**
    * Constructor for the samplingBreaker
+   * The SamplingBreaker breaks after a proportion of requests over a time period fail
+   * More infos at https://github.com/connor4312/cockatiel#samplingbreaker
    */
   private samplingBreaker = Policy.handleAll().circuitBreaker(this.configHandlerService.resetDuration,
     new SamplingBreaker({
@@ -27,6 +31,8 @@ export class AppService {
     }));
   /**
    * Constructor for the timeout
+   * The configured duration specifies how long the timeout waits before timing out
+   * the executed function
    */
   private timeout = Policy.timeout(this.configHandlerService.timeoutDuration, TimeoutStrategy.Aggressive);
 
@@ -73,7 +79,7 @@ export class AppService {
   /**
    * Calling the timeout function via a circuitBreaker
    * Type of circuitBreaker used depends on the config
-   * Handles the errors that occur and sends a log to the monitor via the sendError method
+   * Handles the errors that occur and sends a log to the monitor
    */
   public async handleRequest() {
     let returnString = JSON.parse('{"type" : "Success", "message" : "Request to database was successful" }');
@@ -100,7 +106,8 @@ export class AppService {
     }
   }
   /**
-   * Calls the sendToDatabase method via a timeout function
+   * Calls the function that sends a request to the database via a timeout function
+   * Will timeout the function call if the configured time is exceeded
    */
   private async handleTimeout() {
     try {
@@ -112,7 +119,8 @@ export class AppService {
   }
   /**
    * Sends a get request to the database service
-   * returns the error
+   * 
+   * @returns Returns the error
    */
   private async sendToDatabase() {
     try {

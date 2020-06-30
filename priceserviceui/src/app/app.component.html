@@ -45,7 +45,7 @@
           <mat-select matTooltip="There are two different breaker types.
         The ConsecutiveBreaker breaks after n requests in a row fail.
         The SamplingBreaker breaks after a proportion of requests over a time period fail." #breakerTypeSelect
-            (selectionChange)="selectInput(breakerTypeSelect.value)" [(value)]="breakerTypeSelected">
+            [(value)]="breakerTypeSelected">
             <mat-option value="consecutive">ConsecutiveBreaker</mat-option>
             <mat-option value="sample">SampleBreaker</mat-option>
           </mat-select>
@@ -65,7 +65,7 @@
           <span matSuffix>ms</span>
         </mat-form-field>
       </div>
-      <div class="sample" *ngIf="!isConsecutiveSelected">
+      <div class="sample" *ngIf="breakerTypeSelected === 'sample'">
         <mat-form-field appearance="outline">
           <mat-label>Monitor duration in ms</mat-label>
           <input matNativeControl id="monitorDuration" [(ngModel)]="monitorDuration"
@@ -85,7 +85,7 @@
             matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open." />
         </mat-form-field>
       </div>
-      <div class="consecutive" *ngIf="isConsecutiveSelected">
+      <div class="consecutive" *ngIf="breakerTypeSelected === 'consecutive'">
         <mat-form-field appearance="outline">
           <mat-label>Number of failures in a row</mat-label>
           <input matNativeControl id="consecutiveFailures" [(ngModel)]="consecutiveFailures"

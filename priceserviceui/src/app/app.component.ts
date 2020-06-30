@@ -31,19 +31,6 @@ export class AppComponent {
   consoleOutput = '';
 
   /**
-   * Method sets the variable isConsecutiveSelected to true or false
-   * That variable is used to hide some breakerConfig input fields
-   * @param input determines the value of isConsecutiveSelected
-   */
-  selectInput(input: string) {
-    const selected = input;
-    if (selected === 'consecutive') {
-      this.isConsecutiveSelected = true;
-    } else {
-      this.isConsecutiveSelected = false;
-    }
-  }
-  /**
    * Method adds the input to the output shown in the UI
    * @param input string to be added to UI output
    */
@@ -97,11 +84,12 @@ export class AppComponent {
     }
   }
   /**
-   * Creates the config for the circuitBreaker and and calls sendBreakerConfig()
+   * Creates the config for the circuitBreaker and is then send to the backend
+   * via a post request
    */
   createBreakerConfig() {
     let breakerConfig: JSON;
-    if (this.isConsecutiveSelected) {
+    if (this.breakerTypeSelected === 'consecutive') {
       breakerConfig = JSON.parse(
         '{ "breaker" : "consecutive", "timeoutDuration" : "' + this.timeoutDuration + '", "resetDuration" : "' + this.resetDuration + '", "consecutiveFailures" : "' + this.consecutiveFailures + '"}');
     } else {
@@ -113,6 +101,7 @@ export class AppComponent {
   }
   /**
    * Sends the given config to the backend
+   *
    * @param json config to be send to backend
    */
   sendBreakerConfig(json: JSON) {

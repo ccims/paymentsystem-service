@@ -2,7 +2,8 @@ import { Injectable, Inject } from "@nestjs/common";
 import { ConfigDTO } from "./dto/config.dto";
 
 /**
- * Contains handeling of config changes and the access to the 
+ * Contains handling of config changes and the access to the 
+ * configuration variables
  */
 @Injectable()
 export class ConfigHandlerService {

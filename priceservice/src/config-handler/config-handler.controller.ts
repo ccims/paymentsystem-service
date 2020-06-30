@@ -13,8 +13,10 @@ export class ConfigHandlerController {
     /**
      * Handels the put request that sends the current config for the circuitBreaker
      * Calls the function that changes the config
-     * Returns the values the config was changed to
+     * 
      * @param config The config received in the body of the put request
+     * 
+     * @returns Returns the values the config was changed to.
      */
     @Put()
     getConfig(@Body() config :ConfigDTO) {
