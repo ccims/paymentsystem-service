@@ -2,26 +2,41 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { BrokenCircuitError, ConsecutiveBreaker, Policy, SamplingBreaker, TaskCancelledError, TimeoutStrategy } from "cockatiel";
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { LogMessageFormat, LogType } from "logging-format";
-import { TIMEOUT } from 'dns';
 
 
+/**
+ * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
+ */
 @Injectable()
 export class AppService {
 
-  
-  constructor(private configHandlerService : ConfigHandlerService,
-              private httpService : HttpService) {}
-
+  constructor(private configHandlerService: ConfigHandlerService,
+    private httpService: HttpService) { }
+  /**
+   * Constructor for the consecutiveBreaker
+   * The ConsecutiveBreaker breaks after n requests in a row fail
+   * More info at https://github.com/connor4312/cockatiel#consecutivebreaker
+   */
   private consecutiveBreaker = Policy.handleAll().circuitBreaker(
     this.configHandlerService.resetDuration, new ConsecutiveBreaker(this.configHandlerService.consecutiveFailures));
-    
+  /**
+   * Constructor for the samplingBreaker
+   * The SamplingBreaker breaks after a proportion of requests over a time period fail
+   * More infos at https://github.com/connor4312/cockatiel#samplingbreaker
+   */
   private samplingBreaker = Policy.handleAll().circuitBreaker(this.configHandlerService.resetDuration,
-    new SamplingBreaker({threshold :this.configHandlerService.threshold, duration : this.configHandlerService.monitorDuration,
-    minimumRps : this.configHandlerService.minimumRequests}));  
-
+    new SamplingBreaker({
+      threshold: this.configHandlerService.threshold, duration: this.configHandlerService.monitorDuration,
+      minimumRps: this.configHandlerService.minimumRequests
+    }));
+  /**
+   * Constructor for the timeout
+   * The configured duration specifies how long the timeout waits before timing out
+   * the executed function
+   */
   private timeout = Policy.timeout(this.configHandlerService.timeoutDuration, TimeoutStrategy.Aggressive);
 
-  
+
 
   /**
    * Method that updates the breaker and timeout components
@@ -30,23 +45,24 @@ export class AppService {
    * Has to be checked via the configWasUpdated boolean.
    */
   public updateConfig() {
-    
+
     this.consecutiveBreaker = Policy.handleAll().circuitBreaker(
-    this.configHandlerService.resetDuration, new ConsecutiveBreaker(this.configHandlerService.consecutiveFailures));
+      this.configHandlerService.resetDuration, new ConsecutiveBreaker(this.configHandlerService.consecutiveFailures));
 
     this.samplingBreaker = Policy.handleAll().circuitBreaker(this.configHandlerService.resetDuration,
-    new SamplingBreaker({threshold :this.configHandlerService.threshold, duration : this.configHandlerService.monitorDuration,
-    minimumRps : this.configHandlerService.minimumRequests}));
+      new SamplingBreaker({
+        threshold: this.configHandlerService.threshold, duration: this.configHandlerService.monitorDuration,
+        minimumRps: this.configHandlerService.minimumRequests
+      }));
 
     this.timeout = Policy.timeout(this.configHandlerService.timeoutDuration, TimeoutStrategy.Aggressive);
   }
-    
+
   /**
    * Sends data that is put in to the error monitor.
    * Prints success or failure of the http call to the console
-   * @param data 
    */
-  private sendError(type : LogType, message : string, source : string, target : string) {
+  private sendError(type: LogType, message: string, source: string, target: string) {
     let logMsg: LogMessageFormat = {
       type: type,
       time: Date.now(),
@@ -61,14 +77,16 @@ export class AppService {
     return logMsg;
   }
   /**
-   * 
+   * Calling the timeout function via a circuitBreaker
+   * Type of circuitBreaker used depends on the config
+   * Handles the errors that occur and sends a log to the monitor
    */
   public async handleRequest() {
     let returnString = JSON.parse('{"type" : "Success", "message" : "Request to database was successful" }');
     if (this.configHandlerService.configWasUpdated === true) {
       this.updateConfig();
       this.configHandlerService.configWasUpdated = false;
-    }    
+    }
     try {
       if (this.configHandlerService.breakerType == 'consecutive') {
         const data = await this.consecutiveBreaker.execute(() => this.handleTimeout());
@@ -76,31 +94,34 @@ export class AppService {
       } else {
         const data = await this.samplingBreaker.execute(() => this.handleTimeout());
         return returnString
-      } 
+      }
     } catch (error) {
-        if (error instanceof BrokenCircuitError) {
-          return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice')
-        } else if (error instanceof TaskCancelledError) {
-          return this.sendError(LogType.TIMEOUT,'Request was timed out.',  'priceservice', 'databaseservice')
-        } else {
-          return this.sendError(LogType.ERROR,'Service is not available.',  'priceservice', 'databaseservice')
-        }
+      if (error instanceof BrokenCircuitError) {
+        return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice')
+      } else if (error instanceof TaskCancelledError) {
+        return this.sendError(LogType.TIMEOUT, 'Request was timed out.', 'priceservice', 'databaseservice')
+      } else {
+        return this.sendError(LogType.ERROR, 'Service is not available.', 'priceservice', 'databaseservice')
+      }
     }
   }
   /**
-   * 
+   * Calls the function that sends a request to the database via a timeout function
+   * Will timeout the function call if the configured time is exceeded
    */
   private async handleTimeout() {
     try {
-        console.log(this.configHandlerService.timeoutDuration);
-        const data = await this.timeout.execute(() => this.sendToDatabase());
+      console.log(this.configHandlerService.timeoutDuration);
+      const data = await this.timeout.execute(() => this.sendToDatabase());
     } catch (error) {
       return Promise.reject(error)
-        }
+    }
   }
   /**
+   * Sends a get request to the database service
    * 
-   */       
+   * @returns Returns the error
+   */
   private async sendToDatabase() {
     try {
       const send = await this.httpService.get(this.configHandlerService.databaseUrl).toPromise();

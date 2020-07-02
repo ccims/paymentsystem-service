@@ -1,12 +1,16 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ConfigDTO } from "./dto/config.dto";
-import { BrokenCircuitError, ConsecutiveBreaker, Policy, SamplingBreaker, TaskCancelledError, TimeoutStrategy } from "cockatiel";
 
-
+/**
+ * Contains handling of config changes and the access to the 
+ * configuration variables
+ */
 @Injectable()
 export class ConfigHandlerService {
+    // urls for the requests to the database and monitor
     private _monitorUrl: string = "http://localhost:3400";
     private _databaseUrl: string = "http://localhost:3000";
+    //values of the breaker config
     private _breakerType: string = "consecutive";
     private _resetDuration: number = 10000;
     private _timeoutDuration: number = 10000;
