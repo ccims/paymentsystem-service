@@ -62,14 +62,14 @@ $ npm run start:prod
 ### Using the app
 
 ```
-The backend listens at http://localhost:3300/request for the incoming default GET requests
+The backend listens at http://localhost:3300/request for the incoming default GET requests...
 
-At http://localhost:3000/request-handler/balance to get the balance from the database service.
+- from http://localhost:3000/request-handler/balance to get the balance from the database service.
 
-At http://localhost:3000/request-handler/customer-name to get the customer name from the database service
+- from http://localhost:3000/request-handler/customer-name to get the customer name from the database service
 
 
-The backend listens at http://localhost:3000/config/ for a POST request containing the breaker config
+The backend listens at http://localhost:3300/config/ for a POST request containing the breaker config
 
 The breaker config should have the following format:
 
@@ -80,4 +80,7 @@ The breaker config should have the following format:
     threshold : number;
     minimumRequests : number;
     consecutiveFailures : number;
+
+The backend listens at http://localhost:3300/request/account-value for the incoming GET request of the acccount service and
+transfers the request to the database service which returns a result.
 ```
