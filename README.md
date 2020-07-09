@@ -81,6 +81,6 @@ The breaker config should have the following format:
     minimumRequests : number;
     consecutiveFailures : number;
 
-The backend listens at http://localhost:3300/request/account-value for the incoming GET request of the acccount service and
+The backend listens at http://localhost:3300/request/account-worth for the incoming GET request of the acccount service and
 transfers the request to the database service which returns a result.
 ```
