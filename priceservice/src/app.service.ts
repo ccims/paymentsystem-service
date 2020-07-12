@@ -106,9 +106,14 @@ export class AppService {
     return logMsg;
   }
   /**
-   * Calling the timeout function via a circuitBreaker
-   * Type of circuitBreaker used depends on the config
-   * Handles the errors that occur and sends a log to the monitor
+   * Calls the handleTimeout() function and inserts the returned result into the
+   * return value if the underlying get request to the database service was successful.
+   * Otherwise, a log of the type LogMessageFormat will be created with the correspondent
+   * property values of the error and sent to the error response monitor.
+   *
+   * @returns JSON with properties type, message and result where type takes the value of "Success" if no
+   * error has been experienced, message denotes the successful procedure and result takes on the fetched
+   * value of the underlying get request to the database service
    */
   public async handleRequest() {
     if (this.configHandlerService.configWasUpdated === true) {
@@ -174,8 +179,11 @@ export class AppService {
     }
   }
   /**
-   * Calls the function that sends a request to the database via a timeout function
+   * Calls the function that sends a request to the database via a timeout function and
+   * extracts the returned result
    * Will timeout the function call if the configured time is exceeded
+   *
+   * @returns the result extracted from the function sendToDatabase()
    */
   private async handleTimeout() {
     let result;
@@ -189,9 +197,12 @@ export class AppService {
     }
   }
   /**
-   * Sends a get request to the database service
+   * Sends a get request to the specified endpoint of the database service
+   * This endpoint will be determined in the router handler functions in
+   * the app controller
    *
-   * @returns Returns the error
+   * @returns Returns the fetched data of the get request if request was successful
+   * and an error otherwise
    */
   private async sendToDatabase() {
     try {
