@@ -98,27 +98,24 @@ export class AppService {
       }
     } catch (error) {
       if (error instanceof BrokenCircuitError) {
-        /**
-         * Data of the a Circuit Breaker Error, for now the values are the standard variables of configHandlerService.
-         */
+        
+         //Data of a Circuit Breaker Error, for now the values are the standard variables of configHandlerService.         
         let cbData: CbOpenLogData = {
           openTime : this.configHandlerService.resetDuration,
           failedResponses: this.configHandlerService.consecutiveFailures
         }
         return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice',cbData )
       } else if (error instanceof TaskCancelledError) {
-        /**
-         * Data of the a Timeout Error, for now the values are the standard variables of configHandlerService.
-         */
+        
+         // Data of a Timeout Error, for now the values are the standard variables of configHandlerService.         
         let timeOutData : TimeoutLogData = 
         {
           timeoutDuration : this.configHandlerService.timeoutDuration,
         }
         return this.sendError(LogType.TIMEOUT, 'Request was timed out.', 'priceservice', 'databaseservice', timeOutData)
       } else {
-        /**
-         * Data of the a logical Error, for now the values are not defined.
-        */
+        
+        //Data of a logical Error, for now the values are not defined.        
         let errorData : ErrorLogData = 
         {
           expected: null ,
