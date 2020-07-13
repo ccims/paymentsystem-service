@@ -7,7 +7,9 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "autotest": "ng test --karma-config=karma-ci.conf.js",
+    "autoe2e": "ng e2e --protractorConfig=e2e/protractor-ci.conf.js"
   },
   "private": true,
   "dependencies": {
@@ -42,6 +44,7 @@
     "karma-jasmine": "~3.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "protractor": "~7.0.0",
+    "puppeteer": "^3.3.0",
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
