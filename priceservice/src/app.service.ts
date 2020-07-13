@@ -1,7 +1,7 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { BrokenCircuitError, ConsecutiveBreaker, Policy, SamplingBreaker, TaskCancelledError, TimeoutStrategy } from "cockatiel";
+import { CbOpenLogData, CpuUtilizationLogData, ErrorLogData, LogMessageFormat, LogType, TimeoutLogData } from "logging-format";
 import { ConfigHandlerService } from './config-handler/config-handler.service';
-import { LogMessageFormat, LogType } from "logging-format";
 
 
 /**
@@ -62,13 +62,14 @@ export class AppService {
    * Sends data that is put in to the error monitor.
    * Prints success or failure of the http call to the console
    */
-  private sendError(type: LogType, message: string, source: string, target: string) {
+  private sendError(type: LogType, message: string, source: string, detector: string, data: CpuUtilizationLogData | TimeoutLogData | CbOpenLogData | ErrorLogData) {
     let logMsg: LogMessageFormat = {
       type: type,
       time: Date.now(),
       source: source,
-      target: target,
-      message: message
+      detector: detector,
+      message: message,
+      data:data,
     }
     this.httpService.post(this.configHandlerService.monitorUrl, logMsg).subscribe(
       res => console.log(`Report sent to monitor at ${this.configHandlerService.monitorUrl}`),
@@ -97,11 +98,30 @@ export class AppService {
       }
     } catch (error) {
       if (error instanceof BrokenCircuitError) {
-        return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice')
+        
+         //Data of a Circuit Breaker Error, for now the values are the standard variables of configHandlerService.         
+        let cbData: CbOpenLogData = {
+          openTime : this.configHandlerService.resetDuration,
+          failedResponses: this.configHandlerService.consecutiveFailures
+        }
+        return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice',cbData )
       } else if (error instanceof TaskCancelledError) {
-        return this.sendError(LogType.TIMEOUT, 'Request was timed out.', 'priceservice', 'databaseservice')
+        
+         // Data of a Timeout Error, for now the values are the standard variables of configHandlerService.         
+        let timeOutData : TimeoutLogData = 
+        {
+          timeoutDuration : this.configHandlerService.timeoutDuration,
+        }
+        return this.sendError(LogType.TIMEOUT, 'Request was timed out.', 'priceservice', 'databaseservice', timeOutData)
       } else {
-        return this.sendError(LogType.ERROR, 'Service is not available.', 'priceservice', 'databaseservice')
+        
+        //Data of a logical Error, for now the values are not defined.        
+        let errorData : ErrorLogData = 
+        {
+          expected: null ,
+          result: null
+        }
+        return this.sendError(LogType.ERROR, 'Service is not available.', 'priceservice', 'databaseservice', errorData)
       }
     }
   }
