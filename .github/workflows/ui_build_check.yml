@@ -1,0 +1,24 @@
+name: build priceserviceui
+on: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        os: [ubuntu-lastest]
+        node-version: [12.x] 
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: npm install
+      run: |
+        cd priceserviceui; npm install --dev
+    - name: build
+      run: |
+        cd priceserviceui; npm run-script build
