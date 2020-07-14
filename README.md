@@ -45,6 +45,15 @@ The SamplingBreaker opens after a percentage of requests fails within a certain 
 ```bash
 $ npm install
 ```
+#### Swagger IO Documentation 
+run:
+```bash
+$ npm install --save @nestjs/swagger swagger-ui-express
+```
+
+At http://localhost:3300/api you can see all the API Endpoints, generated from the Swagger IO. 
+
+At http://localhost:3300/api-json is the Swagger JSON file.
 
 ### Running the app
 

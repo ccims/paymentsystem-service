@@ -1,4 +1,5 @@
 import { HttpService, Injectable } from '@nestjs/common';
+
 import {
   BrokenCircuitError,
   ConsecutiveBreaker,
@@ -10,6 +11,7 @@ import {
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { LogMessageFormat, LogType } from 'logging-format';
 import { time } from 'console';
+
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
  */
@@ -82,6 +84,7 @@ export class AppService {
    * Sends data that is put in to the error monitor.
    * Prints success or failure of the http call to the console
    */
+
   private sendError(log: LogMessageFormat) {
     let logMsg: LogMessageFormat = {
       type: log.type,
@@ -138,6 +141,7 @@ export class AppService {
       }
     } catch (error) {
       if (error instanceof BrokenCircuitError) {
+
         const log = {
           type: LogType.CB_OPEN,
           time: Date.now(),
