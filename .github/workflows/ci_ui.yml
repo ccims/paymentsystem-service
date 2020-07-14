@@ -46,7 +46,7 @@ jobs:
         npm ci
     - name: run unit test
       run: | 
-        npm run test
+        npm run autotest
     - name: run e2e test
       run : |
-        npm run test:e2e
+        npm run autoe2e
