@@ -1,6 +1,6 @@
 import { Controller, Post, Put, Body } from "@nestjs/common";
 import { ConfigHandlerService } from "./config-handler.service";
-import { ConfigDTO } from "src/config-handler/dto/config.dto";
+import { ConfigDTO } from "../config-handler/dto/config.dto";
 
 /**
  * Handels the requests that change the config of the circuitBreaker
