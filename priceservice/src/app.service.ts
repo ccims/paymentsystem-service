@@ -1,5 +1,4 @@
 import { HttpService, Injectable } from '@nestjs/common';
-
 import {
   BrokenCircuitError,
   ConsecutiveBreaker,
