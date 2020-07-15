@@ -2,7 +2,8 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { BrokenCircuitError, ConsecutiveBreaker, Policy, SamplingBreaker, TaskCancelledError, TimeoutStrategy } from "cockatiel";
 import { CbOpenLogData, CpuUtilizationLogData, ErrorLogData, LogMessageFormat, LogType, TimeoutLogData } from "logging-format";
 import { ConfigHandlerService } from './config-handler/config-handler.service';
-
+import { Counter } from 'prom-client';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
 
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
@@ -10,8 +11,14 @@ import { ConfigHandlerService } from './config-handler/config-handler.service';
 @Injectable()
 export class AppService {
 
-  constructor(private configHandlerService: ConfigHandlerService,
-    private httpService: HttpService) { }
+  constructor(
+    private configHandlerService: ConfigHandlerService,
+    private httpService: HttpService,
+    @InjectMetric("error_response_total") public error_counter: Counter<string>,
+    @InjectMetric("cpu_utilization") public cpu_counter: Counter<string>,
+    @InjectMetric("timeout") public timeout_counter: Counter<string>
+
+  ) { }
   /**
    * Constructor for the consecutiveBreaker
    * The ConsecutiveBreaker breaks after n requests in a row fail
@@ -69,7 +76,19 @@ export class AppService {
       source: source,
       detector: detector,
       message: message,
-      data:data,
+      data: data,
+    }
+    // increase the counter by 1 when an error will be sent
+    this.error_counter.inc(1);
+    switch (logMsg.type) {
+      case LogType.TIMEOUT: {
+        this.timeout_counter.inc(1);
+        break;
+      }
+      case LogType.CPU: {
+        this.cpu_counter.inc(1);
+        break;
+      }
     }
     this.httpService.post(this.configHandlerService.monitorUrl, logMsg).subscribe(
       res => console.log(`Report sent to monitor at ${this.configHandlerService.monitorUrl}`),
@@ -102,26 +121,26 @@ export class AppService {
          * Data of the a Circuit Breaker Error, for now the values are the standard variables of configHandlerService.
          */
         let cbData: CbOpenLogData = {
-          openTime : this.configHandlerService.resetDuration,
+          openTime: this.configHandlerService.resetDuration,
           failedResponses: this.configHandlerService.consecutiveFailures
         }
-        return this.sendError(LogType.CB_OPEN, 'CircuitBreaker is open.', 'priceservice', 'databaseservice',cbData )
+        return this.sendError(LogType.CPU, 'CircuitBreaker is open.', 'priceservice', 'databaseservice', cbData)
       } else if (error instanceof TaskCancelledError) {
         /**
          * Data of the a Timeout Error, for now the values are the standard variables of configHandlerService.
          */
-        let timeOutData : TimeoutLogData = 
+        let timeOutData: TimeoutLogData =
         {
-          timeoutDuration : this.configHandlerService.timeoutDuration,
+          timeoutDuration: this.configHandlerService.timeoutDuration,
         }
         return this.sendError(LogType.TIMEOUT, 'Request was timed out.', 'priceservice', 'databaseservice', timeOutData)
       } else {
         /**
          * Data of the a logical Error, for now the values are not defined.
         */
-        let errorData : ErrorLogData = 
+        let errorData: ErrorLogData =
         {
-          expected: null ,
+          expected: null,
           result: null
         }
         return this.sendError(LogType.ERROR, 'Service is not available.', 'priceservice', 'databaseservice', errorData)

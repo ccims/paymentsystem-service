@@ -58,7 +58,20 @@ $ npm run start:dev
 # production mode
 $ npm run start:prod
 ```
+### Prometheus
+```bash
+At  http://localhost:3300/metrics to get an overview of the metrics
 
+metrics used are error_response_total, cpu_utilization and timeout
+
+#run Prometheus server 
+https://prometheus.io/download/ download prometheus binaries
+add the prometheus.yml file into the prometheus folder, navigate into the folder and run:
+
+$ prometheus --config.file=prometheus.yml
+
+Prometheus server runs at http://localhost:9090/
+```
 ### Using the app
 
 ```
