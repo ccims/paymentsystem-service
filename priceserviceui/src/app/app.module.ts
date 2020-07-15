@@ -19,7 +19,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   imports: [
     BrowserModule,
     HttpClientModule,
-    HttpClient,
     BrowserAnimationsModule,
     MatSelectModule,
     MatToolbarModule,
@@ -32,7 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatTooltipModule,
     FormsModule,
   ],
-  providers: [HttpClientModule, HttpClient],
+  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
