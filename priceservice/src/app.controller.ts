@@ -7,35 +7,27 @@ import { ConfigHandlerService } from './config-handler/config-handler.service';
  */
 @Controller('request')
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly configHandlerService: ConfigHandlerService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
   /**
    * Handles get requests to the default url of database service
    */
   @Get()
   sendRequest() {
-    this.configHandlerService.databaseUrl = 'http://localhost:3000/';
-    return this.appService.handleRequest();
+    return this.appService.handleRequest("http://localhost:3000/");
   }
   /**
    * Handles get requests to receive balance from database service
    */
   @Get('balance')
   getBalance() {
-    this.configHandlerService.databaseUrl =
-      'http://localhost:3000/request-handler/balance';
-    return this.appService.handleRequest();
+    return this.appService.handleRequest("http://localhost:3000/request-handler/balance");
   }
   /**
    * Handles get requests to receive customer name from database service
    */
   @Get('customer-name')
   getCustomerName() {
-    this.configHandlerService.databaseUrl =
-      'http://localhost:3000/request-handler/customer-name';
-    return this.appService.handleRequest();
+    return this.appService.handleRequest('http://localhost:3000/request-handler/customer-name');
   }
 
   /**
@@ -45,8 +37,6 @@ export class AppController {
    */
   @Get('account-worth')
   async requestAccountValue() {
-    this.configHandlerService.databaseUrl =
-      'http://localhost:3000/account-worth';
-    return this.appService.handleRequest();
+    return this.appService.handleRequest('http://localhost:3000/account-worth');
   }
 }

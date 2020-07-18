@@ -1,5 +1,6 @@
 import { Injectable, Inject } from "@nestjs/common";
 import { ConfigDTO } from "./dto/config.dto";
+import { AppService } from "src/app.service";
 
 /**
  * Contains handling of config changes and the access to the 
@@ -9,7 +10,7 @@ import { ConfigDTO } from "./dto/config.dto";
 export class ConfigHandlerService {
     // urls for the requests to the database and monitor
     private _monitorUrl: string = "http://localhost:3400";
-    private _databaseUrl: string = "http://localhost:3000";
+    // private _databaseUrl: string = "http://localhost:3000";
     //values of the breaker config
     private _breakerType: string = "consecutive";
     private _resetDuration: number = 10000;
@@ -18,7 +19,8 @@ export class ConfigHandlerService {
     private _threshold: number = 0.5;
     private _minimumRequests: number = 1;
     private _consecutiveFailures: number = 3;
-    private _configWasUpdated: boolean = false;
+    // private _configWasUpdated: boolean = false;
+
     /**
      * Receives the configuration for the circuitBreaker via Put call.
      * Updates the config values and sets the configWasUpdate var to true
@@ -35,7 +37,7 @@ export class ConfigHandlerService {
             this.threshold = breakerConfig.threshold;
             this.minimumRequests = breakerConfig.minimumRequests;
         }
-        this.configWasUpdated = true;
+        // this.configWasUpdated = true;
     }
 
     // getter and setter
@@ -45,12 +47,12 @@ export class ConfigHandlerService {
     public set monitorUrl(value: string) {
         this._monitorUrl = value;
     }
-    public get databaseUrl(): string {
-        return this._databaseUrl;
-    }
-    public set databaseUrl(value: string) {
-        this._databaseUrl = value;
-    }
+    // public get databaseUrl(): string {
+    //     return this._databaseUrl;
+    // }
+    // public set databaseUrl(value: string) {
+    //     this._databaseUrl = value;
+    // }
     public get breakerType(): string {
         return this._breakerType;
     }
@@ -93,10 +95,10 @@ export class ConfigHandlerService {
     public set consecutiveFailures(value: number) {
         this._consecutiveFailures = value;
     }
-    public get configWasUpdated(): boolean {
-        return this._configWasUpdated;
-    }
-    public set configWasUpdated(value: boolean) {
-        this._configWasUpdated = value;
-    }  
+    // public get configWasUpdated(): boolean {
+    //     return this._configWasUpdated;
+    // }
+    // public set configWasUpdated(value: boolean) {
+    //     this._configWasUpdated = value;
+    // }  
 }

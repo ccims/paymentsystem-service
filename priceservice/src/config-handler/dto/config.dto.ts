@@ -1,5 +1,5 @@
 
-export class ConfigDTO {
+export interface ConfigDTO {
     breaker : string;
     timeoutDuration : number;
     resetDuration : number;

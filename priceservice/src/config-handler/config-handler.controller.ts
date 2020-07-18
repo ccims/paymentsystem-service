@@ -1,6 +1,7 @@
 import { Controller, Post, Put, Body } from "@nestjs/common";
 import { ConfigHandlerService } from "./config-handler.service";
 import { ConfigDTO } from "../config-handler/dto/config.dto";
+import { AppService } from "src/app.service";
 
 /**
  * Handels the requests that change the config of the circuitBreaker
@@ -8,7 +9,10 @@ import { ConfigDTO } from "../config-handler/dto/config.dto";
 @Controller('config')
 export class ConfigHandlerController {
 
-    constructor( private configHandlerService : ConfigHandlerService)  {}
+    constructor(
+        private configHandlerService : ConfigHandlerService,
+        private appService: AppService
+    )  {}
 
     /**
      * Handels the put request that sends the current config for the circuitBreaker
@@ -21,8 +25,8 @@ export class ConfigHandlerController {
     @Put()
     getConfig(@Body() config :ConfigDTO) {
         console.log(config);
-        console.log("Got request");
         this.configHandlerService.setBreakerConfig(config);
+        this.appService.setupBreaker();
         return 'Changed config! to: ' + JSON.stringify(config);
     }
 }
