@@ -15,7 +15,7 @@ describe('ResponseModification Controller', () => {
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
             controllers: [AppController],    
-            imports: [HttpModule] ,       
+            imports: [HttpModule],       
             providers: [AppService, ConfigHandlerService]
         }).compile();
 

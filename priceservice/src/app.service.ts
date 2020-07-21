@@ -25,7 +25,7 @@ export class AppService {
 
   private breaker: CircuitBreakerPolicy;
 
-  /*
+  /**
     Initializes the CircuitBreaker based on the selected configurations
     called in constructor and in config-handler.controller.ts
   */
@@ -60,6 +60,8 @@ export class AppService {
   /**
    * Sends data that is put in to the error monitor.
    * Prints success or failure of the http call to the console
+   * 
+   * @param log to be send
    */
   private sendError(log: LogMessageFormat): LogMessageFormat {
     this.httpService
@@ -83,6 +85,8 @@ export class AppService {
    * return value if the underlying get request to the database service was successful.
    * Otherwise, a log of the type LogMessageFormat will be created with the correspondent
    * property values of the error and sent to the error response monitor.
+   * 
+   * @param url request destination
    *
    * @returns JSON with properties type, message and result where type takes the value of "Success" if no
    * error has been experienced, message denotes the successful procedure and result takes on the fetched
@@ -149,6 +153,8 @@ export class AppService {
    * Calls the function that sends a request to the database via a timeout function and
    * extracts the returned result
    * Will timeout the function call if the configured time is exceeded
+   * 
+   * @param url request destination
    *
    * @returns the result extracted from the function sendToDatabase()
    */
@@ -174,6 +180,8 @@ export class AppService {
    * Sends a get request to the specified endpoint of the database service
    * This endpoint will be determined in the router handler functions in
    * the app controller
+   * 
+   * @param url request destination
    *
    * @returns Returns the fetched data of the get request if request was successful
    * and an error otherwise
