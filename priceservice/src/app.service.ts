@@ -1,4 +1,4 @@
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService, Injectable, HttpException } from '@nestjs/common';
 import {
   BrokenCircuitError,
   ConsecutiveBreaker,
@@ -9,7 +9,8 @@ import {
   CircuitBreakerPolicy,
 } from 'cockatiel';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
-import { LogMessageFormat, LogType } from 'logging-format';
+import { LogMessageFormat, LogType, ErrorFormat, reportError } from 'logging-format';
+// import { reportError } from 'error-reporter';
 
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
@@ -57,28 +58,6 @@ export class AppService {
     }
   }
 
-  /**
-   * Sends data that is put in to the error monitor.
-   * Prints success or failure of the http call to the console
-   * 
-   * @param log to be send
-   */
-  private sendError(log: LogMessageFormat): LogMessageFormat {
-    this.httpService
-      .post(this.configHandlerService.monitorUrl, log)
-      .subscribe(
-        res =>
-          console.log(
-            `Report sent to monitor at ${this.configHandlerService.monitorUrl}`,
-          ),
-        err =>
-          console.log(
-            `Monitor at ${this.configHandlerService.monitorUrl} not available`,
-          ),
-      );
-    return log;
-  }
-
 
   /**
    * Calls the handleTimeout() function and inserts the returned result into the
@@ -101,50 +80,71 @@ export class AppService {
       return {
         type: "Success",
         message: "Request to database was successful",
-        result: data
+        result: data,
       }
     } catch (error) {
-
-      let log;
-
       if (error instanceof BrokenCircuitError) {
-        log = {
-          type: LogType.CB_OPEN,
-          time: Date.now(),
-          message: 'CircuitBreaker is open.',
-          source: 'Database Service',
-          detector: 'Price Service',
-          data: {
-            openTime: this.configHandlerService.resetDuration,
-            failedResponses: this.configHandlerService.consecutiveFailures,
-          },
-        };
+        throw new HttpException(
+          reportError({
+            correlationId: null,
+            log: {
+              type: LogType.CB_OPEN,
+              time: Date.now(),
+              message: 'CircuitBreaker is open.',
+              source: 'Database Service',
+              detector: 'Price Service',
+              data: {
+                openTime: this.configHandlerService.resetDuration,
+                failedResponses: this.configHandlerService.consecutiveFailures,
+              },
+            }
+          }),
+          503
+        );
       } else if (error instanceof TaskCancelledError) {
-        log = {
-          type: LogType.TIMEOUT,
-          time: Date.now(),
-          message: 'Request was timed out.',
-          source: 'Database Service',
-          detector: 'Price Service',
-          data: {
-            timeoutDuration: this.configHandlerService.timeoutDuration,
-          },
-        };
+        throw new HttpException(
+          reportError({
+            correlationId: null,
+            log: {
+              type: LogType.TIMEOUT,
+              time: Date.now(),
+              message: 'Request was timed out.',
+              source: 'Database Service',
+              detector: 'Price Service',
+              data: {
+                timeoutDuration: this.configHandlerService.timeoutDuration,
+              },
+            }
+          }),
+          503
+        );
       } else {
-        log = {
-          type: LogType.ERROR,
-          time: Date.now(),
-          message: 'Service is not available.',
-          source: 'Database Service',
-          detector: 'Price Service',
-          data: {
-            expected: 'Not an error',
-            result: error.message,
-          },
-        };
+        if (error.error.correlationId === undefined) {
+          // new error occoured
+          throw new HttpException(
+            reportError({
+              correlationId: null,
+              log: {
+                detector: "Price Service",
+                source: "Database Service",
+                time: Date.now(),
+                type: LogType.ERROR,
+                data: {
+                  expected: 'Not an error',
+                  result: error.message,
+                },
+              }
+            }),
+            503
+          );
+        } else {
+          // error occoured before
+          throw new HttpException(
+            reportError(error.error),
+            503
+          );
+        }
       }
-
-      return this.sendError(log);
     }
   }
 
