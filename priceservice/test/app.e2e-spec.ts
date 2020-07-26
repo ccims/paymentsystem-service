@@ -15,9 +15,27 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/ (GET) /request', () => {
     return request(app.getHttpServer())
       .get('/request')
+      .expect(200);
+  });
+
+  it('/ (GET) /request/balance', () => {
+    return request(app.getHttpServer())
+      .get('/request/balance')
+      .expect(200);
+  });
+
+  it('/ (GET) /request/customer-name', () => {
+    return request(app.getHttpServer())
+      .get('/request/customer-name')
+      .expect(200);
+  });
+
+  it('/ (GET) /request/account-worth', () => {
+    return request(app.getHttpServer())
+      .get('/request/account-worth')
       .expect(200);
   });
 });
