@@ -27,18 +27,18 @@ describe('ConfigHandlerService', () => {
       breaker: 'consecutive',
       timeoutDuration: 8000,
       resetDuration: 5000,
-      monitorDuration: 20000,
-      threshold: 0.7,
-      minimumRequests: 3,
+      monitorDuration: 10000,
+      threshold: 0.5,
+      minimumRequests: 1,
       consecutiveFailures: 6,
     };
     confHandService.setBreakerConfig(breakerConfig);
     expect(confHandService.breakerType).toBe('consecutive');
     expect(confHandService.timeoutDuration).toBe(8000);
     expect(confHandService.resetDuration).toBe(5000);
-    expect(confHandService.monitorDuration).toBe(20000);
-    expect(confHandService.threshold).toBe(0.7);
-    expect(confHandService.minimumRequests).toBe(3);
+    expect(confHandService.monitorDuration).toBe(10000);
+    expect(confHandService.threshold).toBe(0.5);
+    expect(confHandService.minimumRequests).toBe(1);
     expect(confHandService.consecutiveFailures).toBe(6);
   });
 });
