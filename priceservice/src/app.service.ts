@@ -9,7 +9,7 @@ import {
   CircuitBreakerPolicy,
 } from 'cockatiel';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
-import { LogMessageFormat, LogType, ErrorFormat, reportError } from 'logging-format';
+import { LogType, reportError } from 'logging-format';
 // import { reportError } from 'error-reporter';
 
 /**

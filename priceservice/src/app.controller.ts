@@ -1,8 +1,6 @@
-import { Controller, Get, Res, Header, Req, HttpService, HttpException } from '@nestjs/common';
+import { Controller, Get, Res, HttpService } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { Response } from 'express';
-import { ErrorFormat } from'error-reporter';
 
 /**
  * This component receives the calls from the frontend to send requests to the database service

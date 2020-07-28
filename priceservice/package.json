@@ -27,7 +27,7 @@
     "@nestjs/swagger": "^4.5.12",
     "@types/uuid": "^8.0.0",
     "cockatiel": "^0.1.5",
-    "logging-module": "git+https://github.com/ccims/logging-module.git",
+    "logging-format": "git+https://github.com/ccims/logging-message-format.git#v1.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
