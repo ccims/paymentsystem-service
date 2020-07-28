@@ -62,8 +62,7 @@ export class AppService {
   /**
    * Calls the handleTimeout() function and inserts the returned result into the
    * return value if the underlying get request to the database service was successful.
-   * Otherwise, a log of the type LogMessageFormat will be created with the correspondent
-   * property values of the error and sent to the error response monitor.
+   * Otherwise, an ErrorFormat Object will be reported to the error-monitor and an HttpException is thrown with this ErrorFormat Object
    * 
    * @param url request destination
    *
