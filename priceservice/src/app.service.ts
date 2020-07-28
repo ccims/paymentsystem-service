@@ -119,7 +119,7 @@ export class AppService {
           503
         );
       } else {
-        if (error.error.correlationId === undefined) {
+        if (error.error?.correlationId === undefined) {
           // new error occoured
           throw new HttpException(
             reportError({
