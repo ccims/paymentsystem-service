@@ -58,7 +58,6 @@ export class AppService {
     }
   }
 
-
   /**
    * Calls the handleTimeout() function and inserts the returned result into the
    * return value if the underlying get request to the database service was successful.
@@ -71,11 +70,8 @@ export class AppService {
    * value of the underlying get request to the database service
    */
   public async handleRequest(url: string): Promise<any> {
-
-    try {      
-      const data = await this.breaker.execute(() =>
-        this.handleTimeout(url),
-      );
+    try {
+      const data = await this.breaker.execute(() => this.handleTimeout(url));
       return {
         type: "Success",
         message: "Request to database was successful",
@@ -147,12 +143,11 @@ export class AppService {
     }
   }
 
-
   /**
    * Calls the function that sends a request to the database via a timeout function and
    * extracts the returned result
    * Will timeout the function call if the configured time is exceeded
-   * 
+   *
    * @param url request destination
    *
    * @returns the result extracted from the function sendToDatabase()
@@ -174,12 +169,11 @@ export class AppService {
     }
   }
 
-
   /**
    * Sends a get request to the specified endpoint of the database service
    * This endpoint will be determined in the router handler functions in
    * the app controller
-   * 
+   *
    * @param url request destination
    *
    * @returns Returns the fetched data of the get request if request was successful
@@ -187,9 +181,7 @@ export class AppService {
    */
   private async sendRequest(url: string) {
     try {
-      const send = await this.httpService
-        .get(url)
-        .toPromise();
+      const send = await this.httpService.get(url).toPromise();
       if (send.status == 200) {
         console.log(`Request to ${url} was successful`);
       }
