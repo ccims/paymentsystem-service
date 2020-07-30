@@ -1,5 +1,6 @@
-import { Injectable, Inject } from '@nestjs/common';
-import { ConfigDTO } from './dto/config.dto';
+import { Injectable, Inject } from "@nestjs/common";
+import { ConfigDTO } from "./dto/config.dto";
+import { AppService } from "../app.service";
 
 /**
  * Contains handling of config changes and the access to the
