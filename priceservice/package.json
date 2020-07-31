@@ -26,7 +26,7 @@
     "@nestjs/platform-express": "^7.0.0",
     "@nestjs/swagger": "^4.5.12",
     "cockatiel": "^0.1.5",
-    "logging-module": "git+https://github.com/ccims/logging-module.git",
+    "logging-module": "git+https://github.com/ccims/logging-module.git#v1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
