@@ -2,6 +2,11 @@ import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
+interface LogOutput {
+  message: string;
+  type: string;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -28,15 +33,8 @@ export class AppComponent {
   monitorDuration = 10000;
   minimumRequests = 1;
   consecutiveFailures = 3;
-  consoleOutput = '';
+  consoleOutput: LogOutput[] = [];
 
-  /**
-   * Method adds the input to the output shown in the UI
-   * @param input string to be added to UI output
-   */
-  addToOutput(input: string) {
-    this.consoleOutput = this.consoleOutput + input + '\n';
-  }
   /**
    * On change of the selected request type in the ui this function is called,
    * the requestUrl will be changed to the corresponding url
@@ -55,15 +53,21 @@ export class AppComponent {
    * Sends a request to the backend
    */
   sendRequest() {
+    this.logRequestType();
     this.http.get(this.sendRequestUrl)
       .subscribe(
-        val => {
+        (val: any) => {
           console.log('Send the request', val);
-          this.logRequestType();
-          this.addToOutput(JSON.stringify(val));
+          this.consoleOutput.push({
+            message: `${val.message}, Result: ${val.result}`,
+            type: "success"
+          })
         },
         response => {
-          this.addToOutput('Request failed.');
+          this.consoleOutput.push({
+            message: "Request failed.",
+            type: "error"
+          })
           console.log('Error in GET call.', response);
         },
         () => {
@@ -76,11 +80,20 @@ export class AppComponent {
    */
   logRequestType() {
     if (this.requestTypeSelected === 'balance') {
-      this.addToOutput('Balance was requested');
+      this.consoleOutput.push({
+        message: "Balance was requested",
+        type: "info"
+      })
     } else if (this.requestTypeSelected === 'customerName') {
-      this.addToOutput('Customer name was requested');
+      this.consoleOutput.push({
+        message: "Customer name was requested",
+        type: "info"
+      })
     } else {
-      this.addToOutput('Default type was requested');
+      this.consoleOutput.push({
+        message: "Default type was requested",
+        type: "info"
+      })
     }
   }
   
@@ -122,8 +135,10 @@ export class AppComponent {
     this.http.put(this.backEndUrl, json, { headers, responseType: 'text' as 'text' })
       .subscribe(
         val => {
-          // this.addToOutput('New CircuitBreaker configuration: ' + JSON.stringify(json));
-          this.addToOutput('CircuitBreaker updated');
+          this.consoleOutput.push({
+            message: "CircuitBreaker updated",
+            type: "config"
+          })
           console.log('Updated the breaker config!', val);
         },
         response => {
