@@ -63,7 +63,7 @@ export class AppComponent {
           this.addToOutput(JSON.stringify(val));
         },
         response => {
-          this.addToOutput('Request to backend failed.');
+          this.addToOutput('Request failed.');
           console.log('Error in GET call.', response);
         },
         () => {
@@ -83,18 +83,29 @@ export class AppComponent {
       this.addToOutput('Default type was requested');
     }
   }
+  
   /**
    * Creates the config for the circuitBreaker and is then send to the backend
    * via a post request
    */
   createBreakerConfig() {
-    let breakerConfig: JSON;
+    let breakerConfig;
     if (this.breakerTypeSelected === 'consecutive') {
-      breakerConfig = JSON.parse(
-        '{ "breaker" : "consecutive", "timeoutDuration" : "' + this.timeoutDuration + '", "resetDuration" : "' + this.resetDuration + '", "consecutiveFailures" : "' + this.consecutiveFailures + '"}');
+      breakerConfig = { 
+        breaker: "consecutive", 
+        timeoutDuration: "' + this.timeoutDuration + '",
+        resetDuration : "' + this.resetDuration + '",
+        consecutiveFailures : "' + this.consecutiveFailures + '"
+      }
     } else {
-      breakerConfig = JSON.parse(
-        '{ "breaker" : "sample", "timeoutDuration" : "' + this.timeoutDuration + '", "resetDuration" : "' + this.resetDuration + '", "monitorDuration" : "' + this.monitorDuration + '", "threshold" : "' + this.threshold + '", "minimumRequests" : "' + this.minimumRequests + '"}');
+      breakerConfig = {
+        breaker : "sample",
+        timeoutDuration: "' + this.timeoutDuration + '",
+        resetDuration: "' + this.resetDuration + '",
+        monitorDuration : "' + this.monitorDuration + '",
+        threshold : "' + this.threshold + '",
+        minimumRequests : "' + this.minimumRequests + '"
+      };
     }
     console.log(breakerConfig);
     this.sendBreakerConfig(breakerConfig);
@@ -102,7 +113,7 @@ export class AppComponent {
   /**
    * Sends the given config to the backend
    *
-   * @param json config to be send to backend
+   * @param json config to be send to backend 
    */
   sendBreakerConfig(json: JSON) {
     const headers = new HttpHeaders()
@@ -111,7 +122,8 @@ export class AppComponent {
     this.http.put(this.backEndUrl, json, { headers, responseType: 'text' as 'text' })
       .subscribe(
         val => {
-          this.addToOutput('New CircuitBreaker configuration: ' + JSON.stringify(json));
+          // this.addToOutput('New CircuitBreaker configuration: ' + JSON.stringify(json));
+          this.addToOutput('CircuitBreaker updated');
           console.log('Updated the breaker config!', val);
         },
         response => {
