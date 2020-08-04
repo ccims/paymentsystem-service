@@ -106,18 +106,18 @@ export class AppComponent {
     if (this.breakerTypeSelected === 'consecutive') {
       breakerConfig = { 
         breaker: "consecutive", 
-        timeoutDuration: "' + this.timeoutDuration + '",
-        resetDuration : "' + this.resetDuration + '",
-        consecutiveFailures : "' + this.consecutiveFailures + '"
+        timeoutDuration: this.timeoutDuration,
+        resetDuration : this.resetDuration,
+        consecutiveFailures : this.consecutiveFailures
       }
     } else {
       breakerConfig = {
         breaker : "sample",
-        timeoutDuration: "' + this.timeoutDuration + '",
-        resetDuration: "' + this.resetDuration + '",
-        monitorDuration : "' + this.monitorDuration + '",
-        threshold : "' + this.threshold + '",
-        minimumRequests : "' + this.minimumRequests + '"
+        timeoutDuration: this.timeoutDuration,
+        resetDuration: this.resetDuration,
+        monitorDuration : this.monitorDuration,
+        threshold : this.threshold,
+        minimumRequests : this.minimumRequests
       };
     }
     console.log(breakerConfig);
