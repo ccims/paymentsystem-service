@@ -37,31 +37,6 @@ export class AppController {
    */
   @Get('account-worth')
   async requestAccountValue(@Res() res: Response) {
-
-    // console.log("ASDads")
-
-    // return res.status(500).send({
-    //   "message": "Nahh fam"
-    // })
-
     return this.appService.handleRequest('http://localhost:3000/account-worth');
-    // response.setHeader("authorization", "asdad");
-
-    // response.status(200).send();
-    // try {
-    //   const res = await this.httpsService.get("http://localhost:3000/account-worth").toPromise()
-    //   console.log("'''")
-    //   return res;
-    // } catch (error) {
-    //   console.log("throw");
-    //   // return error;
-    //   throw new HttpException(
-    //     {
-    //       "message": "Not available",
-    //       "correlationId": "asdaddadsa"
-    //     },
-    //     500
-    //   );
-    // }
   }
 }
