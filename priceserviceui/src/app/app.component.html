@@ -1,44 +1,37 @@
-<style>
-  mat-form-field {
-    display: block;
-    width: 100%;
-    margin: auto;
-  }
 
-  mat-card {
-    width: 100%;
-    margin: auto;
-    margin-top: 16px;
-  }
-
-  .outer {
-    margin-left: 24px;
-  }
-</style>
 <mat-toolbar color="primary">Price service</mat-toolbar>
-<div class="outer" fxLayout="row" fxLayoutGap="24px">
-  <section fxFlex="70">
-    <div>
-      <mat-card>
-        <mat-card-title>Price service controls</mat-card-title>
-        <mat-form-field appearance="outline">
-          <mat-label>Choose request type</mat-label>
-          <mat-select (selectionChange)="setRequestUrl()" [(value)]="requestTypeSelected">
-            <mat-option value="default">Breaker Test</mat-option>
-            <mat-option value="balance">Balance</mat-option>
-            <mat-option value="customerName">Customer name</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
-          Send request to database</button>
-        <br />
-        <pre>{{consoleOutput}}</pre>
-      </mat-card>
-    </div>
-  </section>
-  <br />
-  <section fxFlex="25">
+
+<div class="row">
+  <section class="controls">
     <mat-card>
+      <h3>Price service controls</h3>
+      <br>
+      <mat-form-field appearance="outline">
+        <mat-label>Choose request type</mat-label>
+        <mat-select (selectionChange)="setRequestUrl()" [(value)]="requestTypeSelected">
+          <mat-option value="default">Breaker Test</mat-option>
+          <mat-option value="balance">Balance</mat-option>
+          <mat-option value="customerName">Customer name</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
+        Send request to database</button>
+      <br />
+      <!-- <pre>{{consoleOutput}}</pre> -->
+    </mat-card>
+    <mat-card>
+      <h3>Output</h3>
+      <div *ngFor="let log of consoleOutput">
+        <pre *ngIf="log.type === 'error'" style="color: red;">{{log.message}}</pre>
+        <pre *ngIf="log.type === 'success'">{{log.message}}</pre>
+        <pre *ngIf="log.type === 'info'" style="color: grey">{{log.message}}</pre>
+        <pre *ngIf="log.type === 'config'" style="color: green;">{{log.message}}</pre>
+      </div>
+    </mat-card>
+  </section>
+  <section class="breaker">
+    <mat-card>
+      <h3>Circuit Breaker Config</h3>
       <div>
         <mat-form-field appearance="outline">
           <mat-label>Choose the breaker type</mat-label>

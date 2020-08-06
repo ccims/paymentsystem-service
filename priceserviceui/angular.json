@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "priceserviceui"
+  "defaultProject": "priceserviceui",
+  "cli": {
+    "analytics": false
+  }
 }

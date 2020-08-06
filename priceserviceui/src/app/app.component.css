@@ -1,0 +1,29 @@
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+mat-form-field {
+    display: block;
+    width: 100%;
+    margin: auto;
+  }
+
+mat-card {
+    margin: 16px;
+    /* width: 100%; */
+    /* margin: auto;
+    margin-top: 16px; */
+}
+
+.controls {
+    flex-grow: 1;
+}
+
+.outer {
+    margin-left: 24px;
+}
+
+.breaker {
+    min-width: 400px;
+}
