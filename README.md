@@ -24,7 +24,7 @@ The requests are monitored by a circuit breaker that watches for errors in the r
 There are different endpoints that the GET request can be send to.
 These can be selected in the "Choose request type" selector.
 ```
-![Sending requests to the database service](documentation/BreakerTypes.png)
+![Sending requests to the database service](documentation/BreakerTypes.PNG)
 ```
 The circuit breaker has two different types that can be configured:
 
