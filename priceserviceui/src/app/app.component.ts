@@ -1,7 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-
 interface LogOutput {
   message: string;
   type: string;
@@ -10,14 +9,11 @@ interface LogOutput {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-
 @Injectable()
 export class AppComponent {
-
-  constructor(private http: HttpClient) { }
-
+  constructor(private http: HttpClient) {}
 
   title = 'priceserviceui';
   // two way binding with ui inputs
@@ -44,6 +40,8 @@ export class AppComponent {
       this.sendRequestUrl = 'http://localhost:3300/request/balance';
     } else if (this.requestTypeSelected === 'customerName') {
       this.sendRequestUrl = 'http://localhost:3300/request/customer-name';
+    } else if (this.requestTypeSelected === 'accountWorth') {
+      this.sendRequestUrl = 'http://localhost:3300/request/aaccount-worth';
     } else {
       this.sendRequestUrl = 'http://localhost:3300/request';
     }
@@ -54,26 +52,25 @@ export class AppComponent {
    */
   sendRequest() {
     this.logRequestType();
-    this.http.get(this.sendRequestUrl)
-      .subscribe(
-        (val: any) => {
-          console.log('Send the request', val);
-          this.consoleOutput.push({
-            message: `${val.message}, Result: ${val.result}`,
-            type: "success"
-          })
-        },
-        response => {
-          this.consoleOutput.push({
-            message: "Request failed.",
-            type: "error"
-          })
-          console.log('Error in GET call.', response);
-        },
-        () => {
-          console.log('Call completed.');
-        }
-      );
+    this.http.get(this.sendRequestUrl).subscribe(
+      (val: any) => {
+        console.log('Send the request', val);
+        this.consoleOutput.push({
+          message: `${val.message}, Result: ${val.result}`,
+          type: 'success',
+        });
+      },
+      (response) => {
+        this.consoleOutput.push({
+          message: 'Request failed.',
+          type: 'error',
+        });
+        console.log('Error in GET call.', response);
+      },
+      () => {
+        console.log('Call completed.');
+      }
+    );
   }
   /**
    * Logs in the output which request type was send
@@ -81,22 +78,22 @@ export class AppComponent {
   logRequestType() {
     if (this.requestTypeSelected === 'balance') {
       this.consoleOutput.push({
-        message: "Balance was requested",
-        type: "info"
-      })
+        message: 'Balance was requested',
+        type: 'info',
+      });
     } else if (this.requestTypeSelected === 'customerName') {
       this.consoleOutput.push({
-        message: "Customer name was requested",
-        type: "info"
-      })
+        message: 'Customer name was requested',
+        type: 'info',
+      });
     } else {
       this.consoleOutput.push({
-        message: "Default type was requested",
-        type: "info"
-      })
+        message: 'Default type was requested',
+        type: 'info',
+      });
     }
   }
-  
+
   /**
    * Creates the config for the circuitBreaker and is then send to the backend
    * via a post request
@@ -104,20 +101,20 @@ export class AppComponent {
   createBreakerConfig() {
     let breakerConfig;
     if (this.breakerTypeSelected === 'consecutive') {
-      breakerConfig = { 
-        breaker: "consecutive", 
-        timeoutDuration: this.timeoutDuration,
-        resetDuration : this.resetDuration,
-        consecutiveFailures : this.consecutiveFailures
-      }
-    } else {
       breakerConfig = {
-        breaker : "sample",
+        breaker: 'consecutive',
         timeoutDuration: this.timeoutDuration,
         resetDuration: this.resetDuration,
-        monitorDuration : this.monitorDuration,
-        threshold : this.threshold,
-        minimumRequests : this.minimumRequests
+        consecutiveFailures: this.consecutiveFailures,
+      };
+    } else {
+      breakerConfig = {
+        breaker: 'sample',
+        timeoutDuration: this.timeoutDuration,
+        resetDuration: this.resetDuration,
+        monitorDuration: this.monitorDuration,
+        threshold: this.threshold,
+        minimumRequests: this.minimumRequests,
       };
     }
     console.log(breakerConfig);
@@ -126,22 +123,22 @@ export class AppComponent {
   /**
    * Sends the given config to the backend
    *
-   * @param json config to be send to backend 
+   * @param json config to be send to backend
    */
   sendBreakerConfig(json: JSON) {
-    const headers = new HttpHeaders()
-      .set('Content-Type', 'application/json');
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    this.http.put(this.backEndUrl, json, { headers, responseType: 'text' as 'text' })
+    this.http
+      .put(this.backEndUrl, json, { headers, responseType: 'text' as 'text' })
       .subscribe(
-        val => {
+        (val) => {
           this.consoleOutput.push({
-            message: "CircuitBreaker updated",
-            type: "config"
-          })
+            message: 'CircuitBreaker updated',
+            type: 'config',
+          });
           console.log('Updated the breaker config!', val);
         },
-        response => {
+        (response) => {
           console.log('Error in PUT call.', response);
         },
         () => {

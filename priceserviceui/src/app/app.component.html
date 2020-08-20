@@ -1,31 +1,46 @@
-
 <mat-toolbar color="primary">Price service</mat-toolbar>
 
 <div class="row">
   <section class="controls">
     <mat-card>
       <h3>Price service controls</h3>
-      <br>
+      <br />
       <mat-form-field appearance="outline">
         <mat-label>Choose request type</mat-label>
-        <mat-select (selectionChange)="setRequestUrl()" [(value)]="requestTypeSelected">
-          <mat-option value="default">Breaker Test</mat-option>
+        <mat-select
+          (selectionChange)="setRequestUrl()"
+          [(value)]="requestTypeSelected"
+        >
+          <mat-option value="default">Default</mat-option>
           <mat-option value="balance">Balance</mat-option>
           <mat-option value="customerName">Customer name</mat-option>
+          <mat-option value="accountWorth"> Account worth </mat-option>
         </mat-select>
       </mat-form-field>
-      <button type="button" (click)="sendRequest()" mat-raised-button color="accent">
-        Send request to database</button>
+      <button
+        type="button"
+        (click)="sendRequest()"
+        mat-raised-button
+        color="accent"
+      >
+        Send request to database
+      </button>
       <br />
       <!-- <pre>{{consoleOutput}}</pre> -->
     </mat-card>
     <mat-card>
       <h3>Output</h3>
       <div *ngFor="let log of consoleOutput">
-        <pre *ngIf="log.type === 'error'" style="color: red;">{{log.message}}</pre>
-        <pre *ngIf="log.type === 'success'">{{log.message}}</pre>
-        <pre *ngIf="log.type === 'info'" style="color: grey">{{log.message}}</pre>
-        <pre *ngIf="log.type === 'config'" style="color: green;">{{log.message}}</pre>
+        <pre *ngIf="log.type === 'error'" style="color: red;">{{
+          log.message
+        }}</pre>
+        <pre *ngIf="log.type === 'success'">{{ log.message }}</pre>
+        <pre *ngIf="log.type === 'info'" style="color: grey;">{{
+          log.message
+        }}</pre>
+        <pre *ngIf="log.type === 'config'" style="color: green;">{{
+          log.message
+        }}</pre>
       </div>
     </mat-card>
   </section>
@@ -35,10 +50,13 @@
       <div>
         <mat-form-field appearance="outline">
           <mat-label>Choose the breaker type</mat-label>
-          <mat-select matTooltip="There are two different breaker types.
+          <mat-select
+            matTooltip="There are two different breaker types.
         The ConsecutiveBreaker breaks after n requests in a row fail.
-        The SamplingBreaker breaks after a proportion of requests over a time period fail." #breakerTypeSelect
-            [(value)]="breakerTypeSelected">
+        The SamplingBreaker breaks after a proportion of requests over a time period fail."
+            #breakerTypeSelect
+            [(value)]="breakerTypeSelected"
+          >
             <mat-option value="consecutive">ConsecutiveBreaker</mat-option>
             <mat-option value="sample">SampleBreaker</mat-option>
           </mat-select>
@@ -46,47 +64,76 @@
         <br />
         <mat-form-field appearance="outline">
           <mat-label>Timeout duration</mat-label>
-          <input matInput id="timeoutDuration" [(ngModel)]="timeoutDuration"
-            matTooltip="Time that the CircuitBreaker waits to for the response before failing the request" />
+          <input
+            matInput
+            id="timeoutDuration"
+            [(ngModel)]="timeoutDuration"
+            matTooltip="Time that the CircuitBreaker waits to for the response before failing the request"
+          />
           <span matSuffix>ms</span>
         </mat-form-field>
         <br />
         <mat-form-field appearance="outline">
           <mat-label>Reset duration</mat-label>
-          <input matInput id="resetDuration" [(ngModel)]="resetDuration"
-            matTooltip="Time that the CircuitBreaker stays open before closing again" />
+          <input
+            matInput
+            id="resetDuration"
+            [(ngModel)]="resetDuration"
+            matTooltip="Time that the CircuitBreaker stays open before closing again"
+          />
           <span matSuffix>ms</span>
         </mat-form-field>
       </div>
       <div class="sample" *ngIf="breakerTypeSelected === 'sample'">
         <mat-form-field appearance="outline">
           <mat-label>Monitor duration in ms</mat-label>
-          <input matNativeControl id="monitorDuration" [(ngModel)]="monitorDuration"
-            matTooltip="Duration in which the percentage of failed calls is evaluated" />
+          <input
+            matNativeControl
+            id="monitorDuration"
+            [(ngModel)]="monitorDuration"
+            matTooltip="Duration in which the percentage of failed calls is evaluated"
+          />
           <span matSuffix>ms</span>
         </mat-form-field>
         <br />
         <mat-form-field appearance="outline">
           <mat-label>Threshold</mat-label>
-          <input matNativeControl id="threshold" [(ngModel)]="threshold"
-            matTooltip="Breaks if more requests than the threshold percentage fail in a certain duration" />
+          <input
+            matNativeControl
+            id="threshold"
+            [(ngModel)]="threshold"
+            matTooltip="Breaks if more requests than the threshold percentage fail in a certain duration"
+          />
         </mat-form-field>
         <br />
         <mat-form-field appearance="outline">
           <mat-label>Minimum requests per second</mat-label>
-          <input matNativeControl id="minimumRequests" [(ngModel)]="minimumRequests"
-            matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open." />
+          <input
+            matNativeControl
+            id="minimumRequests"
+            [(ngModel)]="minimumRequests"
+            matTooltip="Defines a minimum number of requests that need to occur in the monitorDuration before the breaker can open."
+          />
         </mat-form-field>
       </div>
       <div class="consecutive" *ngIf="breakerTypeSelected === 'consecutive'">
         <mat-form-field appearance="outline">
           <mat-label>Number of failures in a row</mat-label>
-          <input matNativeControl id="consecutiveFailures" [(ngModel)]="consecutiveFailures"
-            matTooltip="Number of consecutive failures before the breaker opens" />
+          <input
+            matNativeControl
+            id="consecutiveFailures"
+            [(ngModel)]="consecutiveFailures"
+            matTooltip="Number of consecutive failures before the breaker opens"
+          />
         </mat-form-field>
       </div>
       <div>
-        <button type="button" (click)="createBreakerConfig()" mat-raised-button color="accent">
+        <button
+          type="button"
+          (click)="createBreakerConfig()"
+          mat-raised-button
+          color="accent"
+        >
           Change configuration
         </button>
       </div>
