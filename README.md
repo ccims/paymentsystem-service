@@ -1,4 +1,4 @@
-# Paymentsystem service
+# Price service
 
 ## Frontend
 
