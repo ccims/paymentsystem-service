@@ -2,6 +2,7 @@ import { Injectable, Inject } from "@nestjs/common";
 import { ConfigDTO } from "./dto/config.dto";
 import { AppService } from "../app.service";
 
+import { ConfigModule, ConfigService } from "@nestjs/config"
 /**
  * Contains handling of config changes and the access to the
  * configuration variables
@@ -9,7 +10,7 @@ import { AppService } from "../app.service";
 @Injectable()
 export class ConfigHandlerService {
   // url for the requests to the monitor
-  private _monitorUrl: string = 'http://localhost:3400';
+  private _monitorUrl: string;
   //values of the breaker config
   private _breakerType: string = 'consecutive';
   private _resetDuration: number = 10000;
@@ -18,6 +19,11 @@ export class ConfigHandlerService {
   private _threshold: number = 0.5;
   private _minimumRequests: number = 1;
   private _consecutiveFailures: number = 3;
+
+
+  constructor(private readonly configService: ConfigService) {
+    this.monitorUrl = configService.get<string>("BACKEND_RESPONSE_MONITOR_URL", "http://localhost:3400");
+  }
 
   /**
    * Receives the configuration for the circuitBreaker via Put call.

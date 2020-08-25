@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigHandlerService } from './config-handler.service';
 import { ConfigDTO } from './dto/config.dto';
+import { ConfigModule } from '@nestjs/config';
 
 /**
  * This is the test class for the config-handler service which comprises
@@ -13,6 +14,7 @@ describe('ConfigHandlerService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ConfigHandlerService],
+      imports: [ConfigModule]
     }).compile();
 
     confHandService = module.get<ConfigHandlerService>(ConfigHandlerService);
