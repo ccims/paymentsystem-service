@@ -62,7 +62,7 @@ export class AppService {
    * Calls the handleTimeout() function and inserts the returned result into the
    * return value if the underlying get request to the database service was successful.
    * Otherwise, an ErrorFormat Object will be reported to the error-monitor and an HttpException is thrown with this ErrorFormat Object
-   * 
+   *
    * @param url request destination
    *
    * @returns JSON with properties type, message and result where type takes the value of "Success" if no
@@ -73,10 +73,10 @@ export class AppService {
     try {
       const data = await this.breaker.execute(() => this.handleTimeout(url));
       return {
-        type: "Success",
-        message: "Request to database was successful",
+        type: 'Success',
+        message: 'Request to database was successful',
         result: data,
-      }
+      };
     } catch (error) {
       if (error instanceof BrokenCircuitError) {
         throw new HttpException(
@@ -92,9 +92,9 @@ export class AppService {
                 openTime: this.configHandlerService.resetDuration,
                 failedResponses: this.configHandlerService.consecutiveFailures,
               },
-            }
+            },
           }),
-          503
+          503,
         );
       } else if (error instanceof TaskCancelledError) {
         throw new HttpException(
@@ -109,35 +109,32 @@ export class AppService {
               data: {
                 timeoutDuration: this.configHandlerService.timeoutDuration,
               },
-            }
+            },
           }),
-          503
+          503,
         );
       } else {
         if (error.error?.correlationId === undefined) {
-          // new error occoured
+          // new error occurred
           throw new HttpException(
             reportError({
               correlationId: null,
               log: {
-                detector: "Price Service",
-                source: "Database Service",
+                detector: 'Price Service',
+                source: 'Database Service',
                 time: Date.now(),
                 type: LogType.ERROR,
                 data: {
                   expected: 'Not an error',
                   result: error.message,
                 },
-              }
+              },
             }),
-            503
+            503,
           );
         } else {
-          // error occoured before
-          throw new HttpException(
-            reportError(error.error),
-            503
-          );
+          // error occurred before
+          throw new HttpException(reportError(error.error), 503);
         }
       }
     }
@@ -152,7 +149,7 @@ export class AppService {
    *
    * @returns the result extracted from the function sendToDatabase()
    */
-  private async handleTimeout(url: string) {
+  public async handleTimeout(url: string) {
     let result;
     try {
       const timeout = Policy.timeout(
@@ -179,7 +176,7 @@ export class AppService {
    * @returns Returns the fetched data of the get request if request was successful
    * and an error otherwise
    */
-  private async sendRequest(url: string) {
+  public async sendRequest(url: string) {
     try {
       const send = await this.httpService.get(url).toPromise();
       if (send.status == 200) {
