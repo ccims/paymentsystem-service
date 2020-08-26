@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { HttpModule } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('ResponseModification Controller', () => {
   jest.mock('./app.service');
@@ -15,7 +16,7 @@ describe('ResponseModification Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
       imports: [HttpModule],
-      providers: [AppService, ConfigHandlerService],
+      providers: [AppService, ConfigHandlerService, ConfigService],
     }).compile();
 
     controller = module.get<AppController>(AppController);
@@ -44,11 +45,10 @@ describe('ResponseModification Controller', () => {
   });
 
   it('should return account worth of 3000', async () => {
-    let res;
     jest
       .spyOn(appService, 'handleRequest')
       .mockImplementation(() => Promise.resolve('3000'));
-    expect(await controller.requestAccountValue(res)).toEqual('3000');
+    expect(await controller.requestAccountValue()).toEqual('3000');
   });
 
   afterEach(() => {

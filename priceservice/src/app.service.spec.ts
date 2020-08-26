@@ -3,6 +3,7 @@ import { TestingModule, Test, TestingModuleBuilder } from '@nestjs/testing';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { HttpModule, HttpException } from '@nestjs/common';
 import { error } from 'console';
+import { ConfigService } from '@nestjs/config';
 
 describe('AppService', () => {
   let appService: AppService;
@@ -10,7 +11,7 @@ describe('AppService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [AppService, ConfigHandlerService],
+      providers: [AppService, ConfigHandlerService, ConfigService],
     }).compile();
 
     appService = module.get<AppService>(AppService);

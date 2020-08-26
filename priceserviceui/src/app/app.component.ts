@@ -1,5 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 interface LogOutput {
   message: string;
@@ -13,16 +14,15 @@ interface LogOutput {
 })
 @Injectable()
 export class AppComponent {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   title = 'priceserviceui';
   // two way binding with ui inputs
   requestTypeSelected = 'default';
   breakerTypeSelected = 'consecutive';
   isConsecutiveSelected = true;
-  serviceUrl = 'http://localhost:3000/';
-  backEndUrl = 'http://localhost:3300/config/';
-  sendRequestUrl = 'http://localhost:3300/request';
+  backEndUrl = environment.BACKEND_PRICE_SRVICE_URL;
+  sendRequestUrl = this.backEndUrl + 'request';
   threshold = 0.5;
   resetDuration = 10000;
   timeoutDuration = 10000;
@@ -37,13 +37,13 @@ export class AppComponent {
    */
   setRequestUrl() {
     if (this.requestTypeSelected === 'balance') {
-      this.sendRequestUrl = 'http://localhost:3300/request/balance';
+      this.sendRequestUrl = this.backEndUrl + 'request/balance';
     } else if (this.requestTypeSelected === 'customerName') {
-      this.sendRequestUrl = 'http://localhost:3300/request/customer-name';
+      this.sendRequestUrl = this.backEndUrl + 'request/customer-name';
     } else if (this.requestTypeSelected === 'accountWorth') {
-      this.sendRequestUrl = 'http://localhost:3300/request/aaccount-worth';
+      this.sendRequestUrl = this.backEndUrl + 'request/account-worth';
     } else {
-      this.sendRequestUrl = 'http://localhost:3300/request';
+      this.sendRequestUrl = this.backEndUrl + 'request';
     }
     console.log(this.requestTypeSelected);
   }
@@ -128,8 +128,7 @@ export class AppComponent {
   sendBreakerConfig(json: JSON) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    this.http
-      .put(this.backEndUrl, json, { headers, responseType: 'text' as 'text' })
+    this.http.put(this.backEndUrl + 'config', json, { headers, responseType: 'text' as 'text' })
       .subscribe(
         (val) => {
           this.consoleOutput.push({
