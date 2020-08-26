@@ -3,10 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { HttpModule } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 describe('ResponseModification Controller', () => {
     jest.mock("./app.service");
-       jest.mock('./config-handler/config-handler.service');
+    jest.mock('./config-handler/config-handler.service');
 
 
     let controller: AppController;
@@ -14,8 +15,8 @@ describe('ResponseModification Controller', () => {
     let configHandlerService: ConfigHandlerService;
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            controllers: [AppController],    
-            imports: [HttpModule],       
+            controllers: [AppController],
+            imports: [HttpModule, ConfigModule],
             providers: [AppService, ConfigHandlerService]
         }).compile();
 

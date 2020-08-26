@@ -25,4 +25,23 @@ describe('AppComponent', () => {
     const app = fixture.componentInstance;
     expect(app.title).toEqual('priceserviceui');
   });
+
+
+  it('should get right URL', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+
+    app.requestTypeSelected = 'default';
+    app.setRequestUrl();
+    expect(app.sendRequestUrl).toBe('http://localhost:3300/request');
+
+    app.requestTypeSelected = 'customerName';
+    app.setRequestUrl();
+    expect(app.sendRequestUrl).toBe('http://localhost:3300/request/customer-name');
+
+    app.requestTypeSelected = 'balance';
+    app.setRequestUrl();
+    expect(app.sendRequestUrl).toBe('http://localhost:3300/request/balance');
+
+  });
 });

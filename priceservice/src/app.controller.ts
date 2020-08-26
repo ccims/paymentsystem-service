@@ -1,33 +1,37 @@
-import { Controller, Get, Res, HttpService } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AppService } from './app.service';
-import { Response } from 'express';
 
 /**
  * This component receives the calls from the frontend to send requests to the database service
  */
 @Controller('request')
 export class AppController {
-  constructor(private readonly appService: AppService, private httpsService: HttpService) {}
+  databaseUrl: string;
+
+  constructor(private readonly appService: AppService, private configService: ConfigService) {
+    this.databaseUrl = configService.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/");
+  }
   /**
    * Handles get requests to the default url of database service
    */
   @Get()
   sendRequest() {
-    return this.appService.handleRequest("http://localhost:3000/");
+    return this.appService.handleRequest(this.databaseUrl);
   }
   /**
    * Handles get requests to receive balance from database service
    */
   @Get('balance')
   getBalance() {
-    return this.appService.handleRequest("http://localhost:3000/request-handler/balance");
+    return this.appService.handleRequest(this.databaseUrl + 'request-handler/balance');
   }
   /**
    * Handles get requests to receive customer name from database service
    */
   @Get('customer-name')
   getCustomerName() {
-    return this.appService.handleRequest('http://localhost:3000/request-handler/customer-name');
+    return this.appService.handleRequest(this.databaseUrl + 'request-handler/customer-name');
   }
 
   /**
@@ -36,7 +40,7 @@ export class AppController {
    * bind to this router handler that will throw a timeout exception after 5 seconds.
    */
   @Get('account-worth')
-  async requestAccountValue(@Res() res: Response) {
-    return this.appService.handleRequest('http://localhost:3000/account-worth');
+  requestAccountValue() {
+    return this.appService.handleRequest(this.databaseUrl + 'account-worth');
   }
 }
