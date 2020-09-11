@@ -23,6 +23,7 @@ export class AppComponent {
   isConsecutiveSelected = true;
   backEndUrl = environment.BACKEND_PRICE_SRVICE_URL;
   sendRequestUrl = this.backEndUrl + 'request';
+  configUrl =  this.backEndUrl + 'config';
   threshold = 0.5;
   resetDuration = 10000;
   timeoutDuration = 10000;
@@ -128,7 +129,7 @@ export class AppComponent {
   sendBreakerConfig(json: JSON) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    this.http.put(this.backEndUrl + 'config', json, { headers, responseType: 'text' as 'text' })
+    this.http.put(this.configUrl, json, { headers, responseType: 'text' as 'text' })
       .subscribe(
         (val) => {
           this.consoleOutput.push({
