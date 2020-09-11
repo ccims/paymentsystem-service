@@ -14,6 +14,8 @@ $ ng serve
 ```
 ### Using the app
 
+For a more detailed description of all functionalities visit the the Price Service section of out [Github Pages Documentation](https://ccims.github.io/overview-and-documentation/price-service).
+
 ```
 The frontend is running at http://localhost:4300
 ```
@@ -70,8 +72,10 @@ $ npm run start:prod
 
 ### Using the app
 
+For a more detailed description of all functionalities visit the the Price Service section of out [Github Pages Documentation](https://ccims.github.io/overview-and-documentation/price-service).
+
 ```
-The backend listens at http://localhost:3300/request for the incoming default GET requests...
+The backend listens at http://localhost:3300/request for the incoming default GET requests and automatically transfers them to backend of database service (usually sitting ad http://localhost:3000 when running). 
 
 - from http://localhost:3000/request-handler/balance to get the balance from the database service.
 
@@ -89,7 +93,4 @@ The breaker config should have the following format:
     threshold : number;
     minimumRequests : number;
     consecutiveFailures : number;
-
-The backend listens at http://localhost:3300/request/account-worth for the incoming GET request of the acccount service and
-transfers the request to the database service which returns a result.
 ```

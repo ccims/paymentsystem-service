@@ -10,7 +10,6 @@ import {
 } from 'cockatiel';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { LogType, reportError } from 'logging-format';
-// import { reportError } from 'error-reporter';
 
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
@@ -147,7 +146,7 @@ export class AppService {
    *
    * @param url request destination
    *
-   * @returns the result extracted from the function sendToDatabase()
+   * @returns the result extracted from the function sendrequest()
    */
   public async handleTimeout(url: string) {
     let result;
