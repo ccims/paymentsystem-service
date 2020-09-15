@@ -13,7 +13,10 @@ export class AppController {
     this.databaseUrl = configService.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/");
   }
   /**
-   * Handles get requests to the default url of database service
+   * Handles get requests to the default url of database service. 
+   * Requests are send via a circuit breaker, so timeouts and open circuit breaker erros are possible.
+   * 
+   * @returns the value received from the database service or an error if request was not succesful for any reason (like timeout or CB open).
    */
   @Get()
   sendRequest() {
@@ -21,6 +24,9 @@ export class AppController {
   }
   /**
    * Handles get requests to receive balance from database service
+   * 
+   * @returns  A promise with the balance received from the database service or an error if request was not succesful for any reason. 
+   * Could also return a different value if database service is configured to send semantically false responses  
    */
   @Get('balance')
   getBalance() {
@@ -28,6 +34,9 @@ export class AppController {
   }
   /**
    * Handles get requests to receive customer name from database service
+   * 
+   * @returns a Promise with the customer name received from the database service or an error if request was not succesful for any reason 
+   * Could also return a different value if database service is configured to sen d semantically false responses
    */
   @Get('customer-name')
   getCustomerName() {
@@ -35,9 +44,10 @@ export class AppController {
   }
 
   /**
-   * The request sent by the account service will go to this endpoint and
-   * will be transferred to the database service. A timeout interceptor is also
-   * bind to this router handler that will throw a timeout exception after 5 seconds.
+   * Handles get requests to get account-worth from database service. 
+   * Requests are send via a circuit breaker, so timeouts and open circuit breaker erros are possible.
+   * 
+   * @returns A Promise with the account worth from the database service or an error if request was not succesful for any reason. 
    */
   @Get('account-worth')
   requestAccountValue() {

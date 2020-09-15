@@ -10,9 +10,6 @@ import {
 } from 'cockatiel';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { LogType, reportError } from 'logging-format';
-import { ServiceRegistration } from 'nest-service-registration-module';
-import { ConfigService } from '@nestjs/config';
-// import { reportError } from 'error-reporter';
 
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
@@ -21,7 +18,6 @@ import { ConfigService } from '@nestjs/config';
 export class AppService {
   constructor(
     private configHandlerService: ConfigHandlerService,
-    private config: ConfigService,
     private httpService: HttpService,
   ) {
     this.setupBreaker();
@@ -74,7 +70,6 @@ export class AppService {
    */
   public async handleRequest(url: string): Promise<any> {
     try {
-      console.log(url);
       const data = await this.breaker.execute(() => this.handleTimeout(url));
       return {
         type: 'Success',
@@ -90,8 +85,8 @@ export class AppService {
               type: LogType.CB_OPEN,
               time: Date.now(),
               message: 'CircuitBreaker is open.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              source: 'Database Service',
+              detector: 'Price Service',
               data: {
                 openTime: this.configHandlerService.resetDuration,
                 failedResponses: this.configHandlerService.consecutiveFailures,
@@ -108,8 +103,8 @@ export class AppService {
               type: LogType.TIMEOUT,
               time: Date.now(),
               message: 'Request was timed out.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              source: 'Database Service',
+              detector: 'Price Service',
               data: {
                 timeoutDuration: this.configHandlerService.timeoutDuration,
               },
@@ -124,8 +119,8 @@ export class AppService {
             reportError({
               correlationId: null,
               log: {
-                sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-                detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+                detector: 'Price Service',
+                source: 'Database Service',
                 time: Date.now(),
                 type: LogType.ERROR,
                 data: {
@@ -151,7 +146,7 @@ export class AppService {
    *
    * @param url request destination
    *
-   * @returns the result extracted from the function sendToDatabase()
+   * @returns the result extracted from the function sendrequest()
    */
   public async handleTimeout(url: string) {
     let result;
