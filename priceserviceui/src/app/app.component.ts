@@ -2,21 +2,11 @@ import { Component, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
-/**
- * All Log outputs to the frontend are using this format.
- * Message field delivers the content while the type field is used to inform the user what type of message is output. 
- * depending on its type the output will change its color (see app-component html output field).
- */
 interface LogOutput {
   message: string;
   type: string;
 }
 
-
-/**
- * This component handles user inputs and sends them to the price service backend, like
- * Circuit Breaker configurations and requests to the database service.
- */
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -33,7 +23,6 @@ export class AppComponent {
   isConsecutiveSelected = true;
   backEndUrl = environment.BACKEND_PRICE_SRVICE_URL;
   sendRequestUrl = this.backEndUrl + 'request';
-  configUrl =  this.backEndUrl + 'config';
   threshold = 0.5;
   resetDuration = 10000;
   timeoutDuration = 10000;
@@ -58,8 +47,6 @@ export class AppComponent {
     }
     console.log(this.requestTypeSelected);
   }
-
-  
   /**
    * Sends a request to the backend
    */
@@ -85,8 +72,6 @@ export class AppComponent {
       }
     );
   }
-
-
   /**
    * Logs in the output which request type was send
    */
@@ -135,8 +120,6 @@ export class AppComponent {
     console.log(breakerConfig);
     this.sendBreakerConfig(breakerConfig);
   }
-
-
   /**
    * Sends the given config to the backend
    *
@@ -145,7 +128,7 @@ export class AppComponent {
   sendBreakerConfig(json: JSON) {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-    this.http.put(this.configUrl, json, { headers, responseType: 'text' as 'text' })
+    this.http.put(this.backEndUrl + 'config', json, { headers, responseType: 'text' as 'text' })
       .subscribe(
         (val) => {
           this.consoleOutput.push({
