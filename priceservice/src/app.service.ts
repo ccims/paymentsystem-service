@@ -18,7 +18,6 @@ import { LogType, reportError } from 'logging-format';
 export class AppService {
   constructor(
     private configHandlerService: ConfigHandlerService,
-    private config: ConfigService,
     private httpService: HttpService,
   ) {
     this.setupBreaker();
@@ -71,7 +70,6 @@ export class AppService {
    */
   public async handleRequest(url: string): Promise<any> {
     try {
-      console.log(url);
       const data = await this.breaker.execute(() => this.handleTimeout(url));
       return {
         type: 'Success',
@@ -87,8 +85,8 @@ export class AppService {
               type: LogType.CB_OPEN,
               time: Date.now(),
               message: 'CircuitBreaker is open.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              source: 'Database Service',
+              detector: 'Price Service',
               data: {
                 openTime: this.configHandlerService.resetDuration,
                 failedResponses: this.configHandlerService.consecutiveFailures,
@@ -105,8 +103,8 @@ export class AppService {
               type: LogType.TIMEOUT,
               time: Date.now(),
               message: 'Request was timed out.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              source: 'Database Service',
+              detector: 'Price Service',
               data: {
                 timeoutDuration: this.configHandlerService.timeoutDuration,
               },
@@ -121,8 +119,8 @@ export class AppService {
             reportError({
               correlationId: null,
               log: {
-                sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-                detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+                detector: 'Price Service',
+                source: 'Database Service',
                 time: Date.now(),
                 type: LogType.ERROR,
                 data: {
