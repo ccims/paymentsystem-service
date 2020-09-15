@@ -1,9 +1,10 @@
-import { AppService } from './app.service';
-import { TestingModule, Test, TestingModuleBuilder } from '@nestjs/testing';
-import { ConfigHandlerService } from './config-handler/config-handler.service';
-import { HttpModule, HttpException } from '@nestjs/common';
-import { error } from 'console';
+import { HttpException, HttpModule } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TaskCancelledError } from 'cockatiel';
+import { error } from 'console';
+import { AppService } from './app.service';
+import { ConfigHandlerService } from './config-handler/config-handler.service';
 
 describe('AppService', () => {
   let appService: AppService;
@@ -23,6 +24,7 @@ describe('AppService', () => {
     expect(appService).toBeDefined;
   });
 
+
   it('should report successful request', async () => {
     let testUrl = 'http://localhost:3000/request-handler/balance';
     let expectedResult = {
@@ -33,8 +35,11 @@ describe('AppService', () => {
     jest
       .spyOn(appService, 'sendRequest')
       .mockImplementation(() => Promise.resolve('31'));
+
+    expect(await appService.handleTimeout(testUrl)).toEqual('31');
     expect(await appService.handleRequest(testUrl)).toEqual(expectedResult);
   });
+
 
   it('should throw Http Exception due to failed request', async () => {
     let testUrl = 'http://localhost:3000/request-handler/balance';
@@ -47,16 +52,22 @@ describe('AppService', () => {
   });
 
 
-  it('should throw Http exception due to timeout', async () => {
+  it('should throw TaskCancelError and Http exception due to timeout', async () => {
     let testUrl = 'http://localhost:3000/request-handler/balance';
 
-    configHandlerService.timeoutDuration = 3000;
+    configHandlerService.timeoutDuration = 2000;
     jest.spyOn(appService, 'sendRequest').mockImplementation(async () => {
        await delay(50000) //long timeout
       return Promise.resolve('31')
     });
+
+    //handleTimeout throws TaskCancelError
+    await expect(appService.handleTimeout(testUrl)).rejects.toEqual(new TaskCancelledError);
+
+    //handleRequest gets TaskCancelError and throws an HttpException
     await expect(appService.handleRequest(testUrl)).rejects.toEqual(new HttpException('Http Exception', 503));
   });
+
 
   it('should throw Http exception due to negative timeout', async () => {
     let testUrl = 'http://localhost:3000/request-handler/balance';
@@ -69,7 +80,10 @@ describe('AppService', () => {
     await expect(appService.handleRequest(testUrl)).rejects.toEqual(new HttpException('Http Exception', 503));
   });
 
-  it('should thow Http Excpetion due to Circuit Breaker open', async () => {
+
+
+
+  it('should throw Http Excpetion due to Circuit Breaker open', async () => {
     let testUrl = 'http://localhost:3000/request-handler/balance';
     configHandlerService.consecutiveFailures = 1;
     appService.setupBreaker();
