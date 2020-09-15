@@ -10,6 +10,7 @@ import {
 } from 'cockatiel';
 import { ConfigHandlerService } from './config-handler/config-handler.service';
 import { LogType, reportError } from 'logging-format';
+import { ConfigService } from '@nestjs/config';
 
 /**
  * Contains the methods for the circuitBreaker and the methods that send the http requests to the database service
