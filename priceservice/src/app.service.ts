@@ -95,7 +95,7 @@ export class AppService {
                 failedResponses: this.configHandlerService.consecutiveFailures,
               },
             },
-          }),
+          }, this.config.get<string>("BACKEND_RESPONSE_MONITOR_URL", "http://localhost:3400/")),
           503,
         );
       } else if (error instanceof TaskCancelledError) {
@@ -112,7 +112,7 @@ export class AppService {
                 timeoutDuration: this.configHandlerService.timeoutDuration,
               },
             },
-          }),
+          }, this.config.get<string>("BACKEND_RESPONSE_MONITOR_URL", "http://localhost:3400/")),
           503,
         );
       } else {
@@ -128,15 +128,15 @@ export class AppService {
                 type: LogType.ERROR,
                 data: {
                   expected: 'Not an error',
-                  result: error.message,
+                  actual: error.message,
                 },
               },
-            }),
+            }, this.config.get<string>("BACKEND_RESPONSE_MONITOR_URL", "http://localhost:3400/")),
             503,
           );
         } else {
           // error occurred before
-          throw new HttpException(reportError(error.error), 503);
+          throw new HttpException(reportError(error.error, this.config.get<string>("BACKEND_RESPONSE_MONITOR_URL", "http://localhost:3400/")), 503);
         }
       }
     }
