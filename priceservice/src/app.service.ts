@@ -88,8 +88,8 @@ export class AppService {
               type: LogType.CB_OPEN,
               time: Date.now(),
               message: 'CircuitBreaker is open.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              detectorUrl: this.config.get<string>("URL", "http://localhost:3300/"),
+              sourceUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
               data: {
                 openTime: this.configHandlerService.resetDuration,
                 failedResponses: this.configHandlerService.consecutiveFailures,
@@ -106,8 +106,8 @@ export class AppService {
               type: LogType.TIMEOUT,
               time: Date.now(),
               message: 'Request was timed out.',
-              sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-              detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+              detectorUrl: this.config.get<string>("URL", "http://localhost:3300/"),
+              sourceUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
               data: {
                 timeoutDuration: this.configHandlerService.timeoutDuration,
               },
@@ -122,8 +122,8 @@ export class AppService {
             reportError({
               correlationId: null,
               log: {
-                sourceUrl: this.config.get<string>("URL", "http://localhost:3300/"),
-                detectorUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
+                detectorUrl: this.config.get<string>("URL", "http://localhost:3300/"),
+                sourceUrl: this.config.get<string>("BACKEND_DB_SERVICE_URL", "http:/localhost:3000/"),
                 time: Date.now(),
                 type: LogType.ERROR,
                 data: {
